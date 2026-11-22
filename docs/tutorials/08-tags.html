@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 8 课：标签和分类 - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>第 8 课：标签和分类</h1>
+
+            <p>标签是 Org Mode 中另一个强大的组织工具。通过给标题打标签，你可以灵活地分类和检索笔记，而不受文档层级结构的限制。标签和 TODO 状态互相补充，让你的信息管理系统更加完善。</p>
+
+            <h2>添加标签</h2>
+
+            <p>给标题添加标签最简单的方式是使用 <kbd>C-c C-q</kbd>。将光标放在标题行上，按 <kbd>C-c C-q</kbd>，Emacs 会提示你输入标签名。</p>
+
+            <pre><code>* 项目会议                                              :meeting:
+* 阅读笔记                                              :reading:
+* 购物清单                                              :shopping:</code></pre>
+
+            <p>标签显示在标题行的最右侧，用冒号包围。你可以给一个标题添加多个标签：</p>
+
+            <pre><code>* 项目评审会议                                     :meeting:work:urgent:
+* 周末读书                                              :reading:hobby:</code></pre>
+
+            <div class="tip">
+                按 <kbd>C-c C-q</kbd> 后，Emacs 会自动补全已有标签。输入标签时可以用 <kbd>TAB</kbd> 查看补全建议。如果你记得标签名的前几个字母，直接输入即可快速匹配。
+            </div>
+
+            <h3>手动添加标签</h3>
+
+            <p>你也可以直接在标题行末尾手动输入标签。Org 要求标签紧跟标题文本，用至少一个空格分隔，每个标签用冒号包围：</p>
+
+            <pre><code>* 任务描述    :tag1:tag2:tag3:</code></pre>
+
+            <p>虽然手动输入可以，但推荐使用 <kbd>C-c C-q</kbd>，因为它能自动对齐标签并避免格式错误。</p>
+
+            <h2>标签继承</h2>
+
+            <p>Org Mode 中一个非常重要的特性是<strong>标签继承</strong>。子标题会继承所有父标题的标签：</p>
+
+            <pre><code>* 工作                                          :work:
+** 会议记录                                    :work:meeting:
+*** 周一例会                                    :work:meeting:weekly:
+** 代码审查                                    :work:code:
+* 个人                                          :personal:</code></pre>
+
+            <p>注意，显示在标题右侧的标签已经包含了从父级继承来的标签。在上例中：</p>
+
+            <ul>
+                <li>"周一例会"实际上拥有三个标签：<code>work</code>、<code>meeting</code>、<code>weekly</code></li>
+                <li>当你搜索 <code>work</code> 标签时，所有子标题都会被匹配到</li>
+            </ul>
+
+            <div class="info">
+                标签继承使你可以构建强大的分类体系。在顶层设置通用标签（如 <code>work</code>、<code>personal</code>），在子层添加更具体的标签。这样既保持了结构的清晰，又方便搜索和过滤。
+            </div>
+
+            <h3>排除继承</h3>
+
+            <p>有时你可能不希望某个标签被继承。可以用 <code>@</code> 符号标记：</p>
+
+            <pre><code>* 工作项目                                            :work:
+** 不需要继承的子任务                               :@nocurrent:</code></pre>
+
+            <h2>全局标签定义</h2>
+
+            <p>为了保持标签的一致性，你可以在文件级别或全局级别预定义标签列表。</p>
+
+            <h3>文件级别定义</h3>
+
+            <p>在文件开头添加 <code>#+TAGS:</code> 关键字：</p>
+
+            <pre><code>#+TAGS: { @office(o) @home(h) }  laptop(l)  noexport(n)
+#+TAGS: { reading(r) writing(w) coding(c) }</code></pre>
+
+            <p>花括号 <code>{ }</code> 内的标签构成互斥组——一个标题只能选择组内的一个标签。圆括号里的字母是快捷键。</p>
+
+            <div class="tip">
+                定义全局标签后，按 <kbd>C-c C-q</kbd> 时会出现标签选择菜单，你可以用快捷键快速选择，而不需要手动输入。
+            </div>
+
+            <h3>全局配置</h3>
+
+            <p>在 Emacs 配置文件中定义所有 Org 文件共享的标签：</p>
+
+            <pre><code>(setq org-tag-alist
+      '((:startgroup)
+        ("@office" . ?o)
+        ("@home" . ?h)
+        (:endgroup)
+        ("laptop" . ?l)
+        ("noexport" . ?n)
+        (:startgroup)
+        ("reading" . ?r)
+        ("writing" . ?w)
+        ("coding" . ?c)
+        (:endgroup)))</code></pre>
+
+            <h2>按标签搜索</h2>
+
+            <p>标签的最大价值在于快速检索。Org 提供了多种搜索方式。</p>
+
+            <h3>标签搜索命令</h3>
+
+            <p>使用 <kbd>C-c / m</kbd> 或 <kbd>C-c \\</kbd> 打开标签搜索。输入搜索表达式，Org 会折叠文档只显示匹配的标题。</p>
+
+            <pre><code>搜索表达式示例：
+  meeting          — 包含 meeting 标签
+  meeting&amp;urgent   — 同时包含 meeting 和 urgent
+  meeting|urgent   — 包含 meeting 或 urgent
+  meeting&amp;-urgent  — 包含 meeting 但不包含 urgent
+  +work&amp;+code      — 包含 work 和 code（显式加号可选）</code></pre>
+
+            <div class="info">
+                搜索结果会显示匹配标题的完整层级路径，即使只有深层标题匹配，你也可以看到它的父标题路径，方便定位。
+            </div>
+
+            <h3>稀疏树</h3>
+
+            <p>搜索后，Org 会生成一个"稀疏树"（sparse tree）：只显示匹配的标题及其祖先，其余内容被折叠隐藏。你可以用以下命令操作稀疏树：</p>
+
+            <ul>
+                <li><kbd>C-c / r</kbd> — 取消过滤，显示所有内容（remove）</li>
+                <li><kbd>C-c / s</kbd> — 再次搜索</li>
+                <li><kbd>C-c / n</kbd> — 跳到下一个匹配项</li>
+                <li><kbd>C-c / p</kbd> — 跳到上一个匹配项</li>
+            </ul>
+
+            <h3>全局标签搜索</h3>
+
+            <p>如果要在所有议程文件中搜索标签，可以在议程视图中操作（详见第 12 课）。按 <kbd>C-c a m</kbd> 打开全局标签搜索。</p>
+
+            <h2>实战示例</h2>
+
+            <p>下面是一个使用标签组织笔记的完整示例：</p>
+
+            <pre><code>#+TAGS: { @office(o) @home(h) @phone(p) }  { computer(c) }
+#+TAGS: { work(w) personal(p) study(s) }  urgent(u)
+
+* 工作任务                                               :work:
+** 给客户发邮件                                    :work:@office:email:
+   需要在下班前发送项目进度报告
+** 代码审查                                          :work:@office:
+   审查小王的 pull request
+** 技术学习                                          :work:study:
+   - [ ] 学习 Org Mode 高级功能
+   - [ ] 研究新的部署方案
+* 个人事务                                              :personal:
+** 买菜                                                :personal:@home:
+   - [ ] 西红柿
+   - [ ] 鸡蛋
+   - [x] 牛奶
+** 给妈妈打电话                                       :personal:@phone:u:
+   记得今天晚上打</code></pre>
+
+            <div class="warning">
+                标签名不要包含空格。如果需要多词标签，可以用驼峰命名（如 <code>meetingNote</code>）或连字符（如 <code>meeting-note</code>）。
+            </div>
+
+            <h2>标签与 TODO 的配合使用</h2>
+
+            <p>标签和 TODO 状态是互补的关系。一个简单的组合使用模式：</p>
+
+            <pre><code>* TODO [#A] 完成项目提案                             :work:urgent:
+  截止日期：下周一
+
+* TODO [#B] 购买办公用品                            :personal:@office:
+* DONE [#A] 提交月度报告                            :work:
+
+* 读书笔记                                            :reading:
+** TODO 读完第三章                                    :reading:study:
+** DONE 写读书笔记                                    :reading:study:</code></pre>
+
+            <p>通过组合 TODO 状态和标签，你可以在议程视图中做非常精细的过滤，比如"查看所有标记为 work 和 urgent 的未完成任务"。</p>
+
+            <h2>常用命令速查</h2>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-q</kbd></td>
+                    <td>添加/编辑标签</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-q C-q</kbd></td>
+                    <td>重新对齐标签</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c / m</kbd> 或 <kbd>C-c \\</kbd></td>
+                    <td>按标签搜索（稀疏树）</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c / r</kbd></td>
+                    <td>取消过滤，恢复显示</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c / n</kbd></td>
+                    <td>跳到下一个匹配项</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c / p</kbd></td>
+                    <td>跳到上一个匹配项</td>
+                </tr>
+            </table>
+
+            <h2>小结</h2>
+
+            <p>标签系统让 Org Mode 的笔记组织不再受限于单一的层级结构。通过标签继承、全局定义和强大的搜索功能，你可以灵活地从多个维度组织和检索信息。结合下一课要学的日期时间管理，你的 Org 笔记系统会变得更加强大。</p>
+
+            <div class="page-nav">
+                <a href="07-todo-lists.html">← 上一课：TODO 任务管理</a>
+                <a href="09-dates-times.html">下一课：日期和时间 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

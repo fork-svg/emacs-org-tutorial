@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 12 课：日程视图 - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>第 12 课：日程视图</h1>
+
+            <p>议程视图（Agenda View）是 Org Mode 最强大的功能之一。它将你分散在多个文件中的 TODO 任务、截止日期、计划时间和标签整合到一个统一的视图中，让你一目了然地看到所有的任务和日程安排。</p>
+
+            <h2>设置议程文件</h2>
+
+            <p>在使用议程功能之前，你需要告诉 Org 哪些文件应该被纳入议程搜索范围。</p>
+
+            <h3>添加到议程列表</h3>
+
+            <p>打开一个 Org 文件，按 <kbd>C-c [</kbd>（C-c 加左方括号）将其添加到议程文件列表中。Emacs 会在回显区域显示文件已添加。</p>
+
+            <ol class="steps">
+                <li>打开你的工作笔记文件 <code>work.org</code></li>
+                <li>按 <kbd>C-c [</kbd></li>
+                <li>打开你的个人笔记文件 <code>personal.org</code></li>
+                <li>按 <kbd>C-c [</kbd></li>
+            </ol>
+
+            <h3>在配置文件中设置</h3>
+
+            <p>更推荐在 Emacs 配置文件中直接设置议程文件列表，这样每次启动 Emacs 都会自动加载：</p>
+
+            <pre><code>(setq org-agenda-files
+      '("~/org/work.org"
+        "~/org/personal.org"
+        "~/org/reading-list.org"
+        "~/org/projects.org"))</code></pre>
+
+            <h3>管理议程文件</h3>
+
+            <p>使用以下命令管理议程文件列表：</p>
+
+            <ul>
+                <li><kbd>C-c [</kbd> — 将当前文件添加到议程列表</li>
+                <li><kbd>C-c ]</kbd> — 将当前文件从议程列表中移除</li>
+                <li><kbd>C-c '</kbd> — 编辑议程文件列表</li>
+            </ul>
+
+            <div class="tip">
+                你也可以设置一个目录，Org 会自动将该目录下所有 <code>.org</code> 文件纳入议程：<br><br>
+                <code>(setq org-agenda-files (directory-files-recursively "~/org" "\\.org$"))</code>
+            </div>
+
+            <h2>打开议程</h2>
+
+            <p>使用 <kbd>C-c a</kbd> 打开议程菜单。这是一个交互式菜单，显示所有可用的议程命令：</p>
+
+            <pre><code>Agenda and checklist access:
+  a  按日期（agenda）：显示日期相关的条目
+  t  按 TODO：显示所有 TODO 项
+  m  按标签：匹配标签搜索
+  L  按日历（显示日历月视图）
+  ...</code></pre>
+
+            <h3>周视图（Agenda）</h3>
+
+            <p>按 <kbd>C-c a a</kbd> 打开周视图。这是最常用的议程视图，显示一周内所有有日期标记的条目：</p>
+
+            <pre><code>Week-agenda (W2026-11-23):
+Monday     23 November 2026
+  work:        9:00  每日站会
+  work:       14:00  技术评审会议
+  personal:    Scheduled:  开始写技术博客
+Tuesday    24 November 2026
+  work:        9:00  每日站会
+  work:       In 3 days:  提交项目报告
+Wednesday  25 November 2026
+  work:        9:00  每日站会
+Thursday   26 November 2026
+  work:        9:00  每日站会
+  personal:   Deadline:   购买生日礼物
+Friday     27 November 2026
+  work:        9:00  每日站会
+  work:              整理代码仓库 (repeat)</code></pre>
+
+            <div class="info">
+                周视图会显示所有带有 SCHEDULED、DEADLINE 或时间戳的条目。默认显示一周，你可以按 <kbd>b</kbd>（back）和 <kbd>f</kbd>（forward）来前后翻页。
+            </div>
+
+            <h2>周视图操作</h2>
+
+            <p>在议程视图中，你可以使用以下快捷键：</p>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>f</kbd></td>
+                    <td>下一周（forward）</td>
+                </tr>
+                <tr>
+                    <td><kbd>b</kbd></td>
+                    <td>上一周（backward）</td>
+                </tr>
+                <tr>
+                    <td><kbd>.</kbd></td>
+                    <td>回到今天（goto today）</td>
+                </tr>
+                <tr>
+                    <td><kbd>j</kbd></td>
+                    <td>跳转到指定日期</td>
+                </tr>
+                <tr>
+                    <td><kbd>vd</kbd></td>
+                    <td>切换到日视图</td>
+                </tr>
+                <tr>
+                    <td><kbd>vw</kbd></td>
+                    <td>切换到周视图</td>
+                </tr>
+                <tr>
+                    <td><kbd>vm</kbd></td>
+                    <td>切换到月视图</td>
+                </tr>
+                <tr>
+                    <td><kbd>vy</kbd></td>
+                    <td>切换到年视图</td>
+                </tr>
+                <tr>
+                    <td><kbd>RET</kbd></td>
+                    <td>跳转到对应的 Org 文件条目</td>
+                </tr>
+                <tr>
+                    <td><kbd>o</kbd></td>
+                    <td>在新窗口中打开对应条目</td>
+                </tr>
+                <tr>
+                    <td><kbd>q</kbd></td>
+                    <td>退出议程视图</td>
+                </tr>
+            </table>
+
+            <h3>在议程中快速操作</h3>
+
+            <p>你可以直接在议程视图中修改任务状态，而不需要切换到原始文件：</p>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>t</kbd></td>
+                    <td>切换 TODO 状态</td>
+                </tr>
+                <tr>
+                    <td><kbd>,</kbd></td>
+                    <td>设置优先级</td>
+                </tr>
+                <tr>
+                    <td><kbd>:</kbd></td>
+                    <td>编辑标签</td>
+                </tr>
+                <tr>
+                    <td><kbd>S-UP</kbd> / <kbd>S-DOWN</kbd></td>
+                    <td>修改日期（±1 天）</td>
+                </tr>
+                <tr>
+                    <td><kbd>I</kbd></td>
+                    <td>开始计时（clock in）</td>
+                </tr>
+                <tr>
+                    <td><kbd>O</kbd></td>
+                    <td>停止计时（clock out）</td>
+                </tr>
+                <tr>
+                    <td><kbd>k</kbd></td>
+                    <td>删除当前条目</td>
+                </tr>
+            </table>
+
+            <div class="warning">
+                在议程视图中做的所有修改都会直接写入原始 Org 文件。这些操作不是只在视图中生效，而是真正的数据修改。
+            </div>
+
+            <h2>TODO 列表视图</h2>
+
+            <p>按 <kbd>C-c a t</kbd> 打开 TODO 列表视图，显示所有议程文件中的 TODO 项：</p>
+
+            <pre><code>Global TODO list:
+  work:       TODO [#A] 提交季度报告
+  work:       NEXT 代码审查
+  work:       WAITING 等待客户反馈
+  personal:   TODO [#C] 学习 Org Mode
+  personal:   TODO [#B] 健身计划
+  work:       TODO 整理代码仓库
+  reading:    TODO 读完第三章</code></pre>
+
+            <p>TODO 列表中的操作与周视图类似，你也可以用 <kbd>t</kbd> 切换状态，<kbd>RET</kbd> 跳转到原文。</p>
+
+            <h3>过滤 TODO 列表</h3>
+
+            <p>按 <kbd>C-c a T</kbd>（大写 T），可以只查看特定状态的 TODO：</p>
+
+            <pre><code>按 T 后输入状态关键字：
+  TODO     — 只显示 TODO 状态的任务
+  NEXT     — 只显示 NEXT 状态的任务
+  DONE     — 只显示 DONE 状态的任务
+  todo     — 显示所有未完成的任务（不含 DONE）</code></pre>
+
+            <h2>标签搜索视图</h2>
+
+            <p>按 <kbd>C-c a m</kbd> 打开全局标签搜索视图。这和文件内的标签搜索类似，但搜索范围是所有议程文件：</p>
+
+            <pre><code>按 m 后输入标签匹配表达式：
+  work              — 所有带 work 标签的条目
+  work&amp;urgent       — 同时带 work 和 urgent 标签
+  meeting|review    — 带 meeting 或 review 标签
+  work&amp;-meeting     — 带 work 但不带 meeting 标签</code></pre>
+
+            <p>搜索结果会显示匹配条目的完整路径和标签：</p>
+
+            <pre><code>Tags search: work&amp;urgent
+  work:       TODO [#A] 提交季度报告                       :work:urgent:
+  work:       DONE 修复线上 bug                              :work:urgent:
+  personal:   TODO 给妈妈打电话                             :personal:urgent:</code></pre>
+
+            <h2>自定义视图</h2>
+
+            <p>Org 允许你创建自定义的议程视图，将多种视图组合在一起。</p>
+
+            <h3>自定义议程命令</h3>
+
+            <p>在 Emacs 配置文件中定义自定义视图：</p>
+
+            <pre><code>(setq org-agenda-custom-commands
+      '(("n" "今日任务"
+         ((agenda "" ((org-agenda-span 1)))
+          (todo "TODO")
+          (todo "NEXT")))
+
+        ("w" "本周概览"
+         ((agenda "")
+          (todo "TODO")
+          (tags "urgent"))
+         ((org-agenda-sorting-strategy '(priority-down))))
+
+        ("p" "项目状态"
+         ((tags "project&amp;TODO")
+          (tags "project&amp;NEXT")
+          (tags "project&amp;WAITING")))))</code></pre>
+
+            <p>定义后，按 <kbd>C-c a</kbd> 打开菜单时，自定义视图也会出现在列表中。例如按 <kbd>C-c a n</kbd> 就会显示"今日任务"视图。</p>
+
+            <div class="info">
+                自定义视图的第一个字符是快捷键。在上例中，<code>"n"</code> 表示按 <kbd>n</kbd> 触发，<code>"今日任务"</code> 是显示在菜单中的描述。
+            </div>
+
+            <h3>组合视图示例</h3>
+
+            <p>一个实用的自定义视图——"每日简报"：</p>
+
+            <pre><code>(setq org-agenda-custom-commands
+      '(("d" "每日简报"
+         ((agenda "" ((org-agenda-span 1)
+                      (org-agenda-overriding-header "今日日程：")))
+          (todo "TODO" ((org-agenda-overriding-header "未完成任务：")
+                        (org-agenda-sorting-strategy '(priority-down))))
+          (todo "NEXT" ((org-agenda-overriding-header "下一步行动：")))
+          (tags "urgent" ((org-agenda-overriding-header "紧急事项：")))))))</code></pre>
+
+            <h2>议程排序和过滤</h2>
+
+            <h3>排序策略</h3>
+
+            <p>控制议程中条目的排序方式：</p>
+
+            <pre><code>;; 按优先级降序排序
+(setq org-agenda-sorting-strategy '(priority-down))
+
+;; 先按时间排序，再按优先级
+(setq org-agenda-sorting-strategy '(time-up priority-down))
+
+;; 按截止日期排序
+(setq org-agenda-sorting-strategy '(deadline-up))</code></pre>
+
+            <h3>显示范围</h3>
+
+            <pre><code>;; 只显示今天的条目
+(setq org-agenda-span 1)
+
+;; 显示一周
+(setq org-agenda-span 'week)
+
+;; 从指定日期开始显示 N 天
+(setq org-agenda-start-day "+0d")
+(setq org-agenda-span 7)</code></pre>
+
+            <h2>实战：配置完整的议程系统</h2>
+
+            <p>下面是一个完整的议程配置示例：</p>
+
+            <pre><code>;;; 议程文件列表
+(setq org-agenda-files
+      '("~/org/work.org"
+        "~/org/personal.org"
+        "~/org/reading.org"))
+
+;;; 自定义视图
+(setq org-agenda-custom-commands
+      '(("d" "每日简报"
+         ((agenda "" ((org-agenda-span 1)
+                      (org-agenda-overriding-header "今日日程")))
+          (todo "TODO" ((org-agenda-overriding-header "\n未完成任务")))
+          (todo "NEXT" ((org-agenda-overriding-header "\n下一步行动")))))
+
+        ("w" "周报预览"
+         ((agenda "" ((org-agenda-span 7)
+                      (org-agenda-overriding-header "本周概览")))
+          (todo "DONE" ((org-agenda-overriding-header "\n本周完成")))
+          (tags "review" ((org-agenda-overriding-header "\n需要回顾")))))
+
+        ("r" "阅读计划"
+         ((tags "reading" ((org-agenda-overriding-header "阅读列表")))
+          (tags "book" ((org-agenda-overriding-header "\n书籍")))))))
+
+;;; 排序策略
+(setq org-agenda-sorting-strategy
+      '(time-up priority-down category-keep))
+
+;;; 在议程中显示截止日期提前天数
+(setq org-deadline-warning-days 14)
+
+;;; 跳过已完成的重复任务
+(setq org-agenda-skip-deadline-prewarning-if-scheduled 'pre-scheduled)</code></pre>
+
+            <div class="tip">
+                建议每天开始时按 <kbd>C-c a d</kbd> 查看"每日简报"，这样可以快速了解今天的任务和安排。养成这个习惯后，你会发现自己再也不会遗漏重要的截止日期。
+            </div>
+
+            <h2>常用命令速查</h2>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>C-c a a</kbd></td>
+                    <td>周视图（agenda）</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c a t</kbd></td>
+                    <td>全局 TODO 列表</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c a T</kbd></td>
+                    <td>按状态过滤的 TODO 列表</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c a m</kbd></td>
+                    <td>全局标签搜索</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c a L</kbd></td>
+                    <td>日历视图</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c a s</kbd></td>
+                    <td>全文搜索</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c [</kbd></td>
+                    <td>添加文件到议程列表</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c ]</kbd></td>
+                    <td>从议程列表中移除文件</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c a n</kbd></td>
+                    <td>下一个匹配项（在搜索视图中）</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c a p</kbd></td>
+                    <td>上一个匹配项（在搜索视图中）</td>
+                </tr>
+            </table>
+
+            <h2>小结</h2>
+
+            <p>议程视图将前面学到的所有功能——TODO 管理、标签系统、日期时间——整合成一个强大的信息中枢。通过自定义视图，你可以创建完全符合自己工作流的日程面板。掌握议程视图后，你就真正拥有了 Org Mode 作为个人效率工具的核心能力。</p>
+
+            <p>至此，你已经学完了 Org Mode 的所有核心功能。接下来的课程将带你进入更高级的领域：捕获系统、导出发布、Babel 代码执行等进阶功能。</p>
+
+            <div class="page-nav">
+                <a href="11-hyperlinks.html">← 上一课：超链接</a>
+                <a href="13-capture.html">下一课：捕获和附件 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

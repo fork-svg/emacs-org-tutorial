@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 16 课：自定义工作流 - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">← 回到首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>🔄 第 16 课：自定义工作流</h1>
+            <p>通过前面的课程，你已经掌握了 Org Mode 的各种功能。本课将教你如何将这些功能组合起来，创建适合自己的工作流——从 GTD（Getting Things Done）方法到项目管理、日志记录，全方位提升你的效率。</p>
+
+            <h2>GTD 方法</h2>
+            <p>GTD（Getting Things Done）是 David Allen 提出的任务管理方法论。Org Mode 是实现 GTD 的理想工具。</p>
+
+            <h3>GTD 的核心流程</h3>
+            <p>GTD 将任务分为以下几个阶段：</p>
+            <ol>
+                <li><strong>收集（Capture）</strong>：将一切想法、任务记录到收件箱</li>
+                <li><strong>理清（Clarify）</strong>：决定每个项目的下一步行动</li>
+                <li><strong>组织（Organize）</strong>：将任务放入合适的列表</li>
+                <li><strong>回顾（Reflect）</strong>：定期检查任务列表</li>
+                <li><strong>执行（Engage）</strong>：根据上下文选择任务执行</li>
+            </ol>
+
+            <h3>GTD 配置实现</h3>
+            <pre><code>;;; ========================
+;;; GTD 工作流配置
+;;; ========================
+
+;; TODO 状态关键词
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "WAITING(w@/!)" "|" "DONE(d)" "CANCELLED(c@)")))
+
+;; 说明：
+;; TODO  → 待办（初始状态）
+;; NEXT  → 下一步行动（可以立即执行）
+;; WAITING → 等待他人（自动记录时间和注释）
+;; DONE  → 已完成
+;; CANCELLED → 已取消（自动记录时间和注释）
+;; @ 表示需要注释，! 表示自动记录时间
+
+;; 自定义 TODO 颜色
+(set-face-attribute 'org-todo nil :weight 'bold :box nil)
+(setf org-todo-keyword-faces
+      '(("TODO" . (:foreground "#e74c3c" :weight bold))
+        ("NEXT" . (:foreground "#f39c12" :weight bold))
+        ("WAITING" . (:foreground "#3498db" :weight bold))
+        ("DONE" . (:foreground "#27ae60" :weight bold))
+        ("CANCELLED" . (:foreground "#95a5a6" :weight bold))))
+
+;; 标签定义
+(setq org-tag-alist
+      '((:startgroup)
+        ("@电脑" . ?c) ("@手机" . ?p) ("@外出" . ?e)
+        (:endgroup)
+        (:startgroup)
+        ("工作" . ?w) ("个人" . ?h) ("学习" . ?s)
+        (:endgroup)
+        ("快速" . ?q) ("深度" . ?d)
+        ("委托" . ?v)))
+
+;; GTD 文件结构
+(setq org-agenda-files
+      '("~/org/inbox.org"      ;; 收件箱
+        "~/org/next.org"       ;; 下一步行动
+        "~/org/projects.org"   ;; 项目
+        "~/org/waiting.org"    ;; 等待中
+        "~/org/someday.org"))  ;; 将来/也许
+
+;; 自定义 Agenda 视图
+(setq org-agenda-custom-commands
+      '(("g" "GTD 视图"
+         ((agenda "" ((org-agenda-span 'day)))
+          (todo "NEXT" ((org-agenda-files '("~/org/next.org"))
+                        (org-agenda-overriding-header "下一步行动：")))
+          (todo "WAITING" ((org-agenda-files '("~/org/waiting.org"))
+                           (org-agenda-overriding-header "等待中：")))
+          (tags-todo "@电脑" ((org-agenda-files '("~/org/next.org"))
+                              (org-agenda-overriding-header "电脑上下文：")))
+          (todo "TODO" ((org-agenda-files '("~/org/inbox.org"))
+                        (org-agenda-overriding-header "待处理：")))))
+
+        ("w" "周回顾"
+         ((agenda "" ((org-agenda-span 'week)
+                      (org-agenda-start-on-weekday 1)))
+          (todo "DONE" ((org-agenda-span 'week)))
+          (tags "review" ((org-agenda-overriding-header "回顾标记：")))))
+
+        ("p" "项目状态"
+         ((todo "TODO" ((org-agenda-files '("~/org/projects.org"))
+                        (org-agenda-overriding-header "活跃项目：")))
+          (tags "milestone" ((org-agenda-overriding-header "里程碑：")))))))
+</code></pre>
+
+            <h3>GTD 文件示例</h3>
+            <pre><code>#+TITLE: 收件箱
+* 给小明回邮件                                        :@电脑:快速:
+* 周末买菜                                            :@外出:个人:
+* 学习 Org Mode                                       :学习:
+* 准备周会材料                                        :@电脑:工作:
+* 查看牙医预约                                        :个人:
+
+#+TITLE: 下一步行动
+* TODO 完成项目报告                                   :@电脑:工作:
+  SCHEDULED: &lt;2026-11-23 周一&gt;
+  :LOGBOOK:
+  - State "NEXT" from "TODO"  [2026-11-22 周日 10:30]
+  :END:
+* TODO 给供应商打电话                                  :@手机:工作:
+* TODO 整理书架                                        :@家:个人:快速:
+* TODO 提交报销单                                      :@电脑:工作:
+  DEADLINE: &lt;2026-11-25 周三&gt;
+
+#+TITLE: 等待中
+* WAITING 设计稿审核                                    :工作:
+  等待 @设计师小王
+  [2026-11-20] 发出审核请求
+* WAITING 服务器审批                                    :工作:
+  等待 IT 部门审批
+</code></pre>
+
+            <div class="tip">
+                GTD 的关键是"每周回顾"。每周花 30-60 分钟，清理收件箱，回顾所有列表，确保所有项目都有明确的下一步行动。使用自定义 Agenda 命令 <kbd>C-c a w</kbd> 可以快速进行周回顾。
+            </div>
+
+            <h2>项目管理</h2>
+            <p>Org Mode 的项目管理能力足以替代大多数专业项目管理工具。</p>
+
+            <h3>项目文件结构</h3>
+            <pre><code>#+TITLE: 项目列表
+
+* 活跃项目
+** TODO 网站重构项目                                   :project:
+   DEADLINE: &lt;2026-12-31&gt;
+   :PROPERTIES:
+   :EFFORT:   80h
+   :CATEGORY: web-project
+   :END:
+
+*** 需求分析                                          :milestone:
+    DEADLINE: &lt;2026-11-30&gt;
+**** DONE 收集用户需求
+     CLOSED: [2026-11-18 周二 15:00]
+**** TODO 编写需求文档
+     SCHEDULED: &lt;2026-11-23&gt;
+**** TODO 需求评审
+     SCHEDULED: &lt;2026-11-28&gt;
+
+*** 设计阶段                                          :milestone:
+    DEADLINE: &lt;2026-12-15&gt;
+**** TODO UI 设计
+**** TODO 架构设计
+**** TODO 技术选型
+
+*** 开发阶段
+    DEADLINE: &lt;2026-12-25&gt;
+**** TODO 前端开发
+**** TODO 后端 API
+**** TODO 数据库设计
+
+*** 测试和上线
+    DEADLINE: &lt;2026-12-31&gt;
+**** TODO 集成测试
+**** TODO 性能测试
+**** TODO 部署上线
+
+** TODO 移动 App 开发                                  :project:
+   DEADLINE: &lt;2027-03-01&gt;
+   :PROPERTIES:
+   :EFFORT:   200h
+   :CATEGORY: app-project
+   :END:
+
+*** TODO 原型设计
+*** TODO 核心功能开发
+*** TODO 测试
+
+* 已完成项目
+** DONE 内部工具开发                                   :project:
+   CLOSED: [2026-10-30]
+
+* 已取消项目
+** CANCELLED 旧系统迁移                                :project:
+   CLOSED: [2026-09-15]
+   原因：预算不足，推迟到明年
+</code></pre>
+
+            <h3>项目进度追踪</h3>
+            <pre><code>;; 进度条支持
+** TODO 项目进度                                       :project:
+   - [X] 需求收集
+   - [X] 技术方案
+   - [ ] 前端开发 (50%)
+   - [ ] 后端开发 (30%)
+   - [ ] 测试
+   - [ ] 部署
+   进度：[##------] 29%
+
+;; 项目仪表盘 - 使用 column 视图
+;; 在 Org 文件中按 C-c C-x C-d 查看列视图
+#+COLUMNS: 25 ITEM 20 TODO 15 SCHEDULED 15 DEADLINE 10 EFFORT 10 CLOCK
+</code></pre>
+
+            <div class="info">
+                使用列视图（Column View）可以以表格形式查看整个项目的状态。每个标题的属性和 TODO 状态都一目了然。配合时间记录功能，可以精确追踪每个任务的实际花费时间。
+            </div>
+
+            <h3>时间记录</h3>
+            <pre><code>;; 启用时间记录
+(setq org-log-done 'time)            ;; 完成时记录时间
+(setq org-log-into-drawer t)         ;; 日志存入抽屉
+(setq org-clock-into-drawer t)       ;; 时钟存入抽屉
+(setq org-clock-persist t)           ;; 重启后继续时钟
+
+;; 常用时钟命令
+;; C-c C-x C-i → 开始计时（clock in）
+;; C-c C-x C-o → 停止计时（clock out）
+;; C-c C-x C-q → 取消计时（clock cancel）
+;; C-c C-x C-r → 插入时间报告
+;; C-c C-x C-d → 显示时间报告
+
+;; 示例：带时钟记录的标题
+* TODO 编写 API 文档
+  :LOGBOOK:
+  CLOCK: [2026-11-22 周日 09:00]--[2026-11-22 周日 11:30] => 2:30
+  CLOCK: [2026-11-21 周六 14:00]--[2026-11-21 周六 16:00] => 2:00
+  :END:
+  总计已投入：4 小时 30 分钟
+</code></pre>
+
+            <h2>日志和日记</h2>
+            <p>使用 Org 的日期树功能，可以轻松创建结构化的日记和日志系统。</p>
+
+            <h3>日记配置</h3>
+            <pre><code>;; 日记模板
+(setq org-capture-templates
+      (append org-capture-templates
+              '(("j" "日记" entry (file+datetree "~/org/diary.org")
+                 "* %?\n  %U\n  心情：%^{心情|😊 开心|😐 一般|😔 低落}\n  今日要事：%?\n  反思："))))
+
+;; 日记文件示例结构（自动生成）
+;; diary.org
+;; * 2026
+;; ** 2026-11 十一月
+;; *** 2026-11-22 周日
+;; **** [你的日记内容]
+</code></pre>
+
+            <h3>工作日志</h3>
+            <pre><code>#+TITLE: 工作日志
+#+PROPERTY: header-args :results none
+
+* 2026
+** 2026-11 十一月
+*** 2026-11-22 周日                                    :sunday:
+**** 今日完成
+     - [X] 完成 API 接口设计
+     - [X] 审核代码提交
+     - [X] 更新项目文档
+**** 遇到问题
+     数据库连接池在高并发时偶尔超时，需要优化配置。
+**** 明日计划
+     - [ ] 修复数据库连接池问题
+     - [ ] 编写单元测试
+     - [ ] 准备周一的会议材料
+**** 学习时间
+     阅读了 Redis 集群的相关文章，了解了分片策略。
+
+*** 2026-11-21 周六                                    :saturday:
+**** 周末学习
+     学习了 Docker Compose 的高级用法，编写了开发环境配置。
+     #+BEGIN_SRC yaml :tangle docker-compose.yml
+     version: '3.8'
+     services:
+       web:
+         build: .
+         ports:
+           - "8000:8000"
+         depends_on:
+           - db
+           - redis
+       db:
+         image: postgres:15
+         environment:
+           POSTGRES_DB: myapp
+       redis:
+         image: redis:7
+     #+END_SRC
+</code></pre>
+
+            <h3>会议记录模板</h3>
+            <pre><code>;; 会议记录 Capture 模板
+(setq org-capture-templates
+      (append org-capture-templates
+              '(("m" "会议记录" entry (file+datetree "~/org/meetings.org")
+                 "* 会议：%?\n  日期：%T\n  与会者：\n  地点：线上/线下\n\n  ** 议题\n\n  ** 讨论\n\n  ** 决议\n\n  ** 行动项\n  | 负责人 | 任务 | 截止日期 | 状态 |\n  |---------+------+------+------|"))))
+</code></pre>
+
+            <h2>完整 GTD 系统配置</h2>
+            <p>以下是一个可以直接使用的完整配置：</p>
+
+            <pre><code>;;; ========================
+;;; 完整 GTD + 项目管理配置
+;;; ========================
+
+;;; --- 基本设置 ---
+(setq org-directory "~/org")
+(setq org-agenda-files (directory-files-recursively org-directory "\\.org$"))
+
+;;; --- TODO 关键词 ---
+(setq org-todo-keywords
+      '((sequence "TODO(t!)" "NEXT(n!)" "WAITING(w@/!)" "SOMEDAY(s)"
+                  "|" "DONE(d!)" "CANCELLED(c@/!)")))
+
+;;; --- 标签 ---
+(setq org-tag-alist
+      '((:startgroup . nil)
+        ("@电脑" . ?c) ("@手机" . ?p) ("@外出" . ?e)
+        ("@家" . ?h) ("@办公室" . ?o)
+        (:endgroup . nil)
+        (:startgroup . nil)
+        ("工作" . ?w) ("个人" . ?P) ("学习" . ?s)
+        (:endgroup . nil)
+        ("快速" . ?q) ("深度" . ?d) ("委托" . ?v)))
+
+;;; --- Capture 模板 ---
+(setq org-capture-templates
+      '(("i" "收件箱" entry (file "~/org/inbox.org")
+         "* %?\n  %U\n  %a")
+        ("t" "任务")
+        ("tn" "下一步行动" entry (file "~/org/next.org")
+         "* NEXT %?\n  %U")
+        ("tp" "项目任务" entry (file "~/org/projects.org")
+         "* TODO %^{标题}\n  :PROPERTIES:\n  :项目: %^{项目}\n  :END:\n  %?")
+        ("m" "会议" entry (file+datetree "~/org/meetings.org")
+         "* 会议：%?\n  %T\n  与会者：\n  讨论：\n  行动项：")
+        ("j" "日记" entry (file+datetree "~/org/diary.org")
+         "* %?\n  %U\n  今日要事：\n  反思：")
+        ("n" "笔记" entry (file+datetree "~/org/notes.org")
+         "* %?\n  %U\n  %a")))
+
+;;; --- 日志 ---
+(setq org-log-done 'time)
+(setq org-log-into-drawer t)
+(setq org-log-state-notes-insert-after-drawers nil)
+
+;;; --- 时钟 ---
+(setq org-clock-into-drawer t)
+(setq org-clock-persist t)
+(org-clock-persistence-insinuate)
+(setq org-clock-report-include-clocking-task t)
+
+;;; --- Agenda 自定义视图 ---
+(setq org-agenda-custom-commands
+      '(("g" "GTD 仪表盘"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-agenda-overriding-header "今日日程：")))
+          (todo "NEXT" ((org-agenda-overriding-header "\n下一步行动：")))
+          (todo "WAITING" ((org-agenda-overriding-header "\n等待中：")))
+          (tags-todo "@电脑+TODO"
+                     ((org-agenda-overriding-header "\n可在电脑上完成：")))))
+        ("w" "每周回顾"
+         ((agenda "" ((org-agenda-span 'week)
+                      (org-agenda-start-on-weekday 1)))
+          (todo "DONE" ((org-agenda-span 'week)
+                        (org-agenda-overriding-header "\n本周完成：")))
+          (todo "TODO" ((org-agenda-files '("~/org/inbox.org"))
+                        (org-agenda-overriding-header "\n收件箱待处理：")))))
+        ("r" "项目报告"
+         ((todo "TODO" ((org-match "project")
+                        (org-agenda-overriding-header "活跃项目：")))
+          (clocktable
+           :scope 'agenda-with-archives
+           :maxlevel 3
+           :block today)))))
+
+;;; --- 快捷键 ---
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c l") 'org-store-link)
+</code></pre>
+
+            <div class="warning">
+                工作流系统需要时间适应。不要一开始就使用过于复杂的配置。建议先用最简单的模板开始，使用两周后根据实际情况添加新功能。过度设计的系统反而会因为维护成本高而被放弃。
+            </div>
+
+            <h2>日常使用节奏</h2>
+            <p>以下是一个推荐的日常使用节奏：</p>
+
+            <table>
+                <tr><th>时间</th><th>动作</th><th>工具</th></tr>
+                <tr><td>每天早上</td><td>查看日程，确认今日任务</td><td><kbd>C-c a g</kbd> GTD 仪表盘</td></tr>
+                <tr><td>工作期间</td><td>随时捕获新想法</td><td><kbd>C-c c</kbd> Capture</td></tr>
+                <tr><td>任务切换</td><td>记录时间投入</td><td><kbd>C-c C-x C-i/o</kbd> 时钟</td></tr>
+                <tr><td>每天下班</td><td>清理收件箱，安排明日任务</td><td><kbd>C-c a w</kbd> 周回顾</td></tr>
+                <tr><td>每周五</td><td>每周回顾，检查所有列表</td><td><kbd>C-c a w</kbd></td></tr>
+                <tr><td>每月</td><td>归档完成项目，回顾目标</td><td>手动整理</td></tr>
+            </table>
+
+            <h2>本课小结</h2>
+            <p>本课你将 Org Mode 的各个功能组合成了完整的工作流：</p>
+            <ul>
+                <li>GTD 方法帮助你管理任务</li>
+                <li>项目管理功能追踪复杂项目</li>
+                <li>时间记录让你了解时间分配</li>
+                <li>日志系统记录每天的工作和生活</li>
+                <li>日常节奏让系统持续运转</li>
+            </ul>
+
+            <div class="info">
+                最好的工作流是你能坚持使用的工作流。不要追求完美的系统，而要从简单开始，逐步迭代。Org Mode 的灵活性允许你随时调整，让它适应你的需求变化。
+            </div>
+
+            <div class="page-nav">
+                <a href="15-babel.html">← 上一课：代码块和 Babel</a>
+                <a href="17-integration.html">下一课：与其他工具集成 →</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Emacs Org Mode 手把手教程</strong></p>
+            <p>基于 <a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">Org Mode 手册中文翻译</a></p>
+            <p style="margin-top: 15px;">
+                <a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a> ·
+                <a href="https://orgmode.org/" target="_blank">Org Mode 官网</a> ·
+                <a href="https://www.gnu.org/software/emacs/" target="_blank">Emacs 官网</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9em;">遵循 GNU 自由文档许可证 (GFDL) 1.3</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 15 课：代码块和 Babel - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">← 回到首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>⚡ 第 15 课：代码块和 Babel</h1>
+            <p>Org Babel 是 Org Mode 中最强大的功能之一，它让你在文档中嵌入、执行和导出代码。这使得 Org Mode 成为一个<strong>可执行文档</strong>系统——你的笔记、分析和代码可以在同一个文件中协同工作。</p>
+
+            <h2>代码块语法</h2>
+            <p>在 Org 文件中，代码块使用 <code>BEGIN_SRC</code> 和 <code>END_SRC</code> 标记：</p>
+
+            <pre><code>#+BEGIN_SRC python
+def hello():
+    print("Hello, Org Babel!")
+    return 42
+#+END_SRC
+</code></pre>
+
+            <p>也可以使用简写形式 <code>#+begin_src</code>（小写），效果相同。</p>
+
+            <h3>创建代码块的快捷方式</h3>
+            <p>在 Org 文件中按 <kbd>C-c C-, s</kbd>（即 <code>org-insert-structure-template</code>），然后选择 <code>src</code>，Emacs 会自动插入代码块框架。</p>
+
+            <div class="tip">
+                在旧版 Emacs 中，使用 <kbd>C-c C-</kbd> 展开缩写模板。输入 <code>&lt;s</code> 然后按 <kbd>TAB</kbd> 也可以快速插入代码块。
+            </div>
+
+            <h2>执行代码块</h2>
+            <p>代码块可以在 Org 文件中直接执行。将光标放在代码块内部，按 <kbd>C-c C-c</kbd>，Emacs 会询问是否执行。</p>
+
+            <pre><code>#+BEGIN_SRC python
+result = 2 + 3
+print(f"结果是：{result}")
+#+END_SRC
+
+#+RESULTS:
+: 结果是：5
+</code></pre>
+
+            <p>执行后，结果会插入到代码块后面的 <code>#+RESULTS:</code> 块中。</p>
+
+            <h3>首次执行需要确认</h3>
+            <div class="warning">
+                出于安全考虑，Org Babel 默认在每次执行代码前询问确认。如果你信任你的 Org 文件，可以设置为自动执行：
+            </div>
+
+            <pre><code>;; 设置为自动执行（不再每次询问）
+(setq org-confirm-babel-evaluate nil)
+
+;; 或者只对特定语言自动执行
+(setq org-confirm-babel-evaluate
+      (lambda (lang body)
+        (not (member lang '("python" "emacs-lisp" "shell")))))
+</code></pre>
+
+            <h2>启用 Babel</h2>
+            <p>Org Babel 需要显式启用语言支持：</p>
+
+            <pre><code>;; 加载 org-babel
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (emacs-lisp . t)
+   (shell . t)
+   (R . t)
+   (sql . t)
+   (sqlite . t)
+   (js . t)
+   (ruby . t)
+   (perl . t)
+   (C . t)
+   (latex . t)
+   (gnuplot . t)
+   (plantuml . t)
+   (dot . t)         ;; Graphviz
+   (calc . t)
+   (org . t)))       ;; Org 本身也可以执行！
+</code></pre>
+
+            <h2>支持的语言</h2>
+            <p>Org Babel 支持超过 40 种编程语言。以下是常用的几种：</p>
+
+            <table>
+                <tr><th>语言</th><th>标识符</th><th>前置要求</th></tr>
+                <tr><td>Python</td><td><code>python</code></td><td>Python 解释器</td></tr>
+                <tr><td>Emacs Lisp</td><td><code>emacs-lisp</code></td><td>无（内置）</td></tr>
+                <tr><td>Shell</td><td><code>shell</code></td><td>系统 shell</td></tr>
+                <tr><td>R</td><td><code>R</code></td><td>R 和 ESS 包</td></tr>
+                <tr><td>SQL</td><td><code>sql</code></td><td>数据库连接</td></tr>
+                <tr><td>JavaScript</td><td><code>js</code></td><td>Node.js</td></tr>
+                <tr><td>Ruby</td><td><code>ruby</code></td><td>Ruby 解释器</td></tr>
+                <tr><td>C/C++</td><td><code>C</code> / <code>cpp</code></td><td>编译器</td></tr>
+                <tr><td>LaTeX</td><td><code>latex</code></td><td>LaTeX 发行版</td></tr>
+                <tr><td>PlantUML</td><td><code>plantuml</code></td><td>PlantUML + Java</td></tr>
+                <tr><td>Graphviz</td><td><code>dot</code></td><td>Graphviz</td></tr>
+            </table>
+
+            <h3>语言示例</h3>
+
+            <h4>Emacs Lisp（内置，无需额外配置）</h4>
+            <pre><code>#+BEGIN_SRC emacs-lisp
+(message "当前 Emacs 版本：%s" emacs-version)
+(format "今天日期：%s" (format-time-string "%Y-%m-%d"))
+#+END_SRC
+
+#+RESULTS:
+: 今天日期：2026-11-22
+</code></pre>
+
+            <h4>Shell 脚本</h4>
+            <pre><code>#+BEGIN_SRC shell :results output
+echo "当前用户：$(whoami)"
+echo "主机名：$(hostname)"
+echo "当前目录：$(pwd)"
+ls -la *.org | wc -l
+#+END_SRC
+
+#+RESULTS:
+: 当前用户：scientist
+: 主机名：myhost
+: 当前目录：/home/scientist/org
+: 5
+</code></pre>
+
+            <h4>R 语言（数据分析）</h4>
+            <pre><code>#+BEGIN_SRC R :results output
+data <- c(1, 2, 3, 4, 5)
+cat("均值：", mean(data), "\n")
+cat("标准差：", sd(data), "\n")
+cat("中位数：", median(data), "\n")
+#+END_SRC
+
+#+RESULTS:
+: 均值： 3
+: 标准差： 1.581139
+: 中位数： 3
+</code></pre>
+
+            <h4>Python 数据处理</h4>
+            <pre><code>#+BEGIN_SRC python :results output
+import json
+from collections import Counter
+
+text = "apple banana apple orange banana apple"
+words = text.split()
+counter = Counter(words)
+for word, count in counter.most_common():
+    print(f"{word}: {count}")
+#+END_SRC
+
+#+RESULTS:
+: apple: 3
+: banana: 2
+: orange: 1
+</code></pre>
+
+            <h2>代码块参数</h2>
+            <p>代码块可以接受多种参数来控制执行行为和结果处理。</p>
+
+            <h3>结果类型（:results）</h3>
+            <pre><code>;; 结果输出方式
+#+BEGIN_SRC python :results output
+print("这是输出结果")
+#+END_SRC
+
+#+BEGIN_SRC python :results value
+42  ;; 返回最后一个表达式的值
+#+END_SRC
+
+#+BEGIN_SRC python :results table
+[[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+#+END_SRC
+
+;; 结果插入方式
+#+BEGIN_SRC python :results replace    ;; 替换已有结果（默认）
+#+BEGIN_SRC python :results append     ;; 追加到已有结果后
+#+BEGIN_SRC python :results silent     ;; 不插入结果
+</code></pre>
+
+            <h3>变量传递（:var）</h3>
+            <pre><code>;; 使用 Org 表格数据作为变量
+| 姓名 | 年龄 | 城市 |
+|------+------|------|
+| 张三 | 25   | 北京 |
+| 李四 | 30   | 上海 |
+| 王五 | 28   | 广州 |
+
+#+NAME: people
+| 姓名 | 年龄 | 城市 |
+|------+------|------|
+| 张三 | 25   | 北京 |
+| 李四 | 30   | 上海 |
+| 王五 | 28   | 广州 |
+
+#+BEGIN_SRC python :var data=people :results output
+for row in data:
+    print(f"{row[0]} 今年 {row[1]} 岁，来自 {row[2]}")
+#+END_SRC
+
+#+RESULTS:
+: 张三 今年 25 岁，来自 北京
+: 李四 今年 30 岁，来自 上海
+: 王五 今年 28 岁，来自 广州
+</code></pre>
+
+            <h3>会话（:session）</h3>
+            <p>使用 <code>:session</code> 参数可以让多个代码块共享同一个解释器会话：</p>
+
+            <pre><code>#+BEGIN_SRC python :session mysession
+import math
+x = 10
+#+END_SRC
+
+#+BEGIN_SRC python :session mysession
+y = math.sqrt(x)
+print(f"√{x} = {y}")
+#+END_SRC
+
+#+RESULTS:
+: √10 = 3.1622776601683795
+</code></pre>
+
+            <div class="info">
+                <code>:session</code> 对于需要多次交互的场景特别有用，比如数据分析时需要在多个代码块中操作同一个 DataFrame，或者 R 语言中需要保持绘图状态。
+            </div>
+
+            <h3>命名代码块（:var 引用）</h3>
+            <pre><code>;; 命名代码块
+#+NAME: square
+#+BEGIN_SRC python :var x=5
+return x * x
+#+END_SRC
+
+;; 调用命名代码块
+#+BEGIN_SRC python :var result=square(x=7) :results output
+print(f"7 的平方是 {result}")
+#+END_SRC
+
+#+RESULTS:
+: 7 的平方是 49
+</code></pre>
+
+            <h2>图表生成</h2>
+            <p>Org Babel 可以生成各种图表和图形。</p>
+
+            <h3>Gnuplot 图表</h3>
+            <pre><code>#+BEGIN_SRC gnuplot :file chart.png :results file
+set terminal png size 800,600
+set title "销售数据"
+set xlabel "月份"
+set ylabel "销售额（万元）"
+plot [1:12] [0:100] \
+     '-' using 1:2 with lines title "产品A" lw 2, \
+     '-' using 1:2 with lines title "产品B" lw 2
+1  30
+2  45
+3  55
+4  60
+5  50
+6  65
+7  70
+8  80
+9  75
+10 85
+11 90
+12 95
+e
+1  20
+2  35
+3  40
+4  50
+5  55
+6  45
+7  60
+8  70
+9  65
+10 75
+11 80
+12 85
+e
+#+END_SRC
+
+#+RESULTS:
+[[file:chart.png]]
+</code></pre>
+
+            <h3>PlantUML 图表</h3>
+            <pre><code>#+BEGIN_SRC plantuml :file architecture.png
+@startuml
+actor 用户
+participant "前端" as FE
+participant "API" as API
+database "数据库" as DB
+
+用户 -> FE: 访问页面
+FE -> API: GET /data
+API -> DB: SELECT query
+DB --> API: 返回数据
+API --> FE: JSON 响应
+FE --> 用户: 显示页面
+@enduml
+#+END_SRC
+
+#+RESULTS:
+[[file:architecture.png]]
+</code></pre>
+
+            <h3>Graphviz 流程图</h3>
+            <pre><code>#+BEGIN_SRC dot :file flowchart.png :cmdline -Tpng
+digraph workflow {
+    rankdir=LR;
+    node [shape=box, style=rounded];
+    start -> "编写代码" -> "测试" -> "审查";
+    "审查" -> "合并" [label="通过"];
+    "审查" -> "编写代码" [label="修改"];
+    "合并" -> deploy [label="自动"];
+}
+#+END_SRC
+
+#+RESULTS:
+[[file:flowchart.png]]
+</code></pre>
+
+            <h2>Tangling 提取代码</h2>
+            <p>Tangling 是将 Org 文件中的代码块提取为独立的源文件的过程。这在"文学编程"（Literate Programming）中非常有用。</p>
+
+            <h3>基本 Tangle</h3>
+            <pre><code>;; 在代码块上添加 tangle 属性
+#+BEGIN_SRC python :tangle hello.py
+def greet(name):
+    """问候函数"""
+    print(f"你好，{name}！")
+
+if __name__ == "__main__":
+    greet("世界")
+#+END_SRC
+</code></pre>
+
+            <h3>Tangle 操作</h3>
+            <table>
+                <tr><th>快捷键</th><th>操作</th></tr>
+                <tr><td><kbd>C-c C-v t</kbd></td><td>提取（tangle）当前文件的所有代码块</td></tr>
+                <tr><td><kbd>C-c C-v f</kbd></td><td>提取并指定文件名</td></tr>
+                <tr><td><kbd>C-c C-v i</kbd></td><td>插入（untangle）外部文件到代码块</td></tr>
+            </table>
+
+            <pre><code>;; 多个代码块提取到不同文件
+#+BEGIN_SRC python :tangle main.py :tangle-mode (identity #o755)
+#!/usr/bin/env python3
+from utils import helper
+helper.run()
+#+END_SRC
+
+#+BEGIN_SRC python :tangle utils.py
+def helper():
+    print("工具函数")
+#+END_SRC
+
+#+BEGIN_SRC bash :tangle install.sh :tangle-mode (identity #o755)
+#!/bin/bash
+pip install -r requirements.txt
+python main.py
+#+END_SRC
+</code></pre>
+
+            <div class="tip">
+                Tangle 是"文学编程"的核心功能。你可以把文档和代码写在同一个 Org 文件中，然后用 Tangling 提取出可运行的代码。代码的注释和文档就是你的 Org 文件正文。
+            </div>
+
+            <h2>实战示例：数据分析报告</h2>
+            <p>以下是一个完整的数据分析示例，展示 Babel 的实用价值：</p>
+
+            <pre><code>#+TITLE: 销售数据分析报告
+#+PROPERTY: header-args:python :session analysis :results output
+
+* 数据准备
+
+#+NAME: sales-data
+| 月份 | 产品A | 产品B | 产品C |
+|------|-------|-------|-------|
+| 1月  | 120   | 80    | 95    |
+| 2月  | 135   | 90    | 100   |
+| 3月  | 150   | 85    | 110   |
+| 4月  | 140   | 95    | 120   |
+| 5月  | 160   | 100   | 105   |
+| 6月  | 175   | 110   | 130   |
+
+* 数据加载
+
+#+BEGIN_SRC python :var data=sales-data
+import pandas as pd
+df = pd.DataFrame(data[1:], columns=data[0])
+print(df.head())
+print(f"\n数据形状：{df.shape}")
+#+END_SRC
+
+* 统计分析
+
+#+BEGIN_SRC python
+# 各产品统计
+stats = df.describe()
+print("=== 描述性统计 ===")
+print(stats)
+
+# 相关性分析
+numeric_df = df.select_dtypes(include='number')
+print("\n=== 相关性矩阵 ===")
+print(numeric_df.corr())
+#+END_SRC
+
+* 可视化
+
+#+BEGIN_SRC python :results file
+import matplotlib.pyplot as plt
+plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS']
+
+fig, ax = plt.subplots(figsize=(10, 6))
+months = df['月份']
+ax.plot(months, df['产品A'], 'o-', label='产品A', linewidth=2)
+ax.plot(months, df['产品B'], 's-', label='产品B', linewidth=2)
+ax.plot(months, df['产品C'], '^-', label='产品C', linewidth=2)
+ax.set_title('月度销售趋势')
+ax.set_xlabel('月份')
+ax.set_ylabel('销售额（万元）')
+ax.legend()
+ax.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig('sales_trend.png', dpi=150)
+'sales_trend.png'
+#+END_SRC
+
+#+RESULTS:
+[[file:sales_trend.png]]
+
+* 结论
+根据分析：
+1. 产品A 增长最稳定，6个月增长了约 46%
+2. 产品B 和市场波动相关较大
+3. 产品C 表现平稳，但增速低于产品A
+#+END_SRC
+</code></pre>
+
+            <h2>配置最佳实践</h2>
+
+            <pre><code>;;; ========================
+;;; Org Babel 推荐配置
+;;; ========================
+
+;; 启用语言支持
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)
+   (emacs-lisp . t)
+   (shell . t)
+   (R . t)
+   (sql . t)
+   (dot . t)
+   (plantuml . t)))
+
+;; 设置执行确认
+(setq org-confirm-babel-evaluate nil)
+
+;; 代码块语法高亮
+(setq org-src-fontify-natively t)
+
+;; 保持代码块缩进
+(setq org-src-preserve-indentation t)
+
+;; 编辑代码块时使用原生模式
+(setq org-edit-src-content-indentation 0)
+
+;; 代码块窗口显示方式
+(setq org-src-window-setup 'current-window)
+
+;; 自动在代码块中开启对应 major mode
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+
+;; 内联显示图片结果
+(setq org-display-inline-images t)
+(add-hook 'org-mode-hook 'org-toggle-inline-images)
+</code></pre>
+
+            <div class="warning">
+                设置 <code>org-confirm-babel-evaluate</code> 为 <code>nil</code> 有安全风险。只在你信任文件来源的情况下关闭确认。如果经常打开来自网络的 Org 文件，建议保持确认开启。
+            </div>
+
+            <h2>本课小结</h2>
+            <p>本课你学习了 Org Babel 的核心功能：</p>
+            <ul>
+                <li>在 Org 文件中嵌入和编写代码</li>
+                <li>使用 <kbd>C-c C-c</kbd> 执行代码块</li>
+                <li>多种语言支持和会话管理</li>
+                <li>代码块参数控制行为和结果</li>
+                <li>Tangling 提取可运行的源文件</li>
+                <li>生成图表和数据分析报告</li>
+            </ul>
+
+            <div class="info">
+                Org Babel 使 Emacs 成为一个"可复现研究"工具。你的文档、数据、分析和结论都在同一个文件中，任何人都可以重新执行你的代码来验证结果。这是科研和技术写作的强大工具。
+            </div>
+
+            <div class="page-nav">
+                <a href="14-export.html">← 上一课：导出和发布</a>
+                <a href="16-workflows.html">下一课：自定义工作流 →</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Emacs Org Mode 手把手教程</strong></p>
+            <p>基于 <a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">Org Mode 手册中文翻译</a></p>
+            <p style="margin-top: 15px;">
+                <a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a> ·
+                <a href="https://orgmode.org/" target="_blank">Org Mode 官网</a> ·
+                <a href="https://www.gnu.org/software/emacs/" target="_blank">Emacs 官网</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9em;">遵循 GNU 自由文档许可证 (GFDL) 1.3</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第 4 课：Org Mode 快速开始 - Emacs Org Mode 教程</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <nav class="breadcrumb">
+    <a href="../index.html">首页</a> &gt;
+    <span>第 4 课：Org Mode 快速开始</span>
+  </nav>
+
+  <header>
+    <h1>第 4 课：Org Mode 快速开始</h1>
+    <p class="subtitle">了解 Org Mode 的核心概念，5 分钟快速体验</p>
+  </header>
+
+  <main>
+    <section id="introduction">
+      <h2>课程简介</h2>
+      <p>Org Mode 是 Emacs 中最强大的模式之一。它可以用于笔记、待办事项管理、日程安排、项目规划、文档编写等多种用途。本课将介绍 Org Mode 的核心概念，并带你快速体验它的基本功能。</p>
+      <div class="info">
+        <strong>Org Mode 能做什么？</strong>
+        <ul style="margin-top: 0.5em;">
+          <li>结构化笔记和文档</li>
+          <li>待办事项（Todo）管理</li>
+          <li>日程安排和提醒</li>
+          <li>项目管理</li>
+          <li>表格和数据处理</li>
+          <li>代码块和 Literate Programming</li>
+          <li>导出为多种格式（HTML、PDF、Markdown 等）</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="core-concepts">
+      <h2>核心概念</h2>
+      <p>Org Mode 基于三个核心概念：大纲、任务和日程。</p>
+      <h3>1. 大纲（Outline）</h3>
+      <p>Org Mode 使用星号（<code>*</code>）来创建层级结构的大纲。这是 Org Mode 的基础：</p>
+      <pre><code>* 一级标题
+** 二级标题
+*** 三级标题
+**** 四级标题
+
+这是标题下的内容。
+可以有多个段落。</code></pre>
+      <p>大纲可以折叠和展开，让你专注于当前关注的内容。</p>
+      <h3>2. 任务（Todo）</h3>
+      <p>在标题前添加 TODO 关键字，就可以将其标记为待办事项：</p>
+      <pre><code>* TODO 完成报告
+** TODO 收集数据
+** TODO 撰写初稿
+** DONE 发送审核    :COMPLETED:</code></pre>
+      <p>任务状态可以在 TODO、DONE、CANCELLED 等之间切换。</p>
+      <h3>3. 日程（Schedule）</h3>
+      <p>Org Mode 可以为任务添加时间戳，并生成日程表：</p>
+      <pre><code>* TODO 参加会议
+  SCHEDULED: &lt;2024-03-15 周五 14:00&gt;
+
+* TODO 提交报告
+  DEADLINE: &lt;2024-03-20 周三&gt;</code></pre>
+      <div class="tip">
+        <strong>核心理念：</strong>Org Mode 的设计哲学是"纯文本、结构化、可操作"。所有数据都以纯文本形式存储，易于阅读和编辑，同时提供强大的组织功能。
+      </div>
+    </section>
+
+    <section id="quick-start">
+      <h2>5 分钟快速体验</h2>
+      <p>让我们快速体验 Org Mode 的基本功能。按照以下步骤操作：</p>
+      <h3>第一步：创建 Org 文件</h3>
+      <ol>
+        <li>在 Emacs 中按 <kbd>C-x C-f</kbd></li>
+        <li>输入文件名（如 <code>~/test.org</code>）并按回车</li>
+        <li>Emacs 会自动进入 Org Mode</li>
+      </ol>
+      <div class="info">
+        <strong>验证模式：</strong>查看 Emacs 底部的模式行，应该显示 "Org" 字样，表示当前处于 Org Mode。
+      </div>
+      <h3>第二步：创建大纲结构</h3>
+      <p>输入以下内容：</p>
+      <pre><code>* 工作计划
+** 本周任务
+*** TODO 完成项目报告
+*** TODO 准备演示材料
+*** 整理文件
+** 下周计划
+*** 团队会议
+*** 项目评审</code></pre>
+      <h3>第三步：体验折叠功能</h3>
+      <ol>
+        <li>将光标放在 "* 工作计划" 这一行</li>
+        <li>按 <kbd>TAB</kbd> 键折叠子标题</li>
+        <li>再按 <kbd>TAB</kbd> 键展开</li>
+        <li>按 <kbd>S-TAB</kbd>（Shift+Tab）全局折叠/展开</li>
+      </ol>
+      <h3>第四步：添加任务状态</h3>
+      <ol>
+        <li>将光标放在 "** TODO 完成项目报告" 行</li>
+        <li>按 <kbd>C-c C-t</kbd> 切换任务状态</li>
+        <li>选择 DONE，你会看到状态变为 "DONE"</li>
+        <li>Org Mode 会自动添加时间戳</li>
+      </ol>
+      <h3>第五步：添加时间戳</h3>
+      <ol>
+        <li>将光标放在某个标题下</li>
+        <li>按 <kbd>C-c C-s</kbd>（schedule）安排日程</li>
+        <li>使用日历选择日期，或使用快捷键</li>
+        <li>按回车确认</li>
+      </ol>
+      <pre><code>* TODO 参加会议
+  SCHEDULED: &lt;2024-03-15 周五 14:00&gt;
+
+这个任务已经被安排了日程。</code></pre>
+      <h3>第六步：保存文件</h3>
+      <p>按 <kbd>C-x C-s</kbd> 保存文件。Org 文件就是普通的纯文本文件，可以用任何文本编辑器打开。</p>
+      <div class="tip">
+        <strong>恭喜！</strong>你刚刚完成了 Org Mode 的基本操作。在后续课程中，你将深入学习每个功能。
+      </div>
+    </section>
+
+    <section id="file-structure">
+      <h2>Org 文件结构</h2>
+      <p>一个典型的 Org 文件结构如下：</p>
+      <pre><code>#+TITLE: 我的项目计划
+#+AUTHOR: 张三
+#+DATE: 2024-03-10
+#+STARTUP: overview
+
+* 项目概述
+  这是项目的简介和背景说明。
+
+* TODO 第一阶段：需求分析
+  DEADLINE: &lt;2024-03-20&gt;
+  ** TODO 收集用户需求
+  ** TODO 编写需求文档
+  ** DONE 需求评审
+
+* 第二阶段：设计
+  SCHEDULED: &lt;2024-03-25&gt;
+  ** 架构设计
+  ** 数据库设计
+  ** 界面设计
+
+* 第三阶段：开发
+  ** 前端开发
+  ** 后端开发
+  ** 测试
+
+* 备注
+  重要联系人：
+  - 项目经理：李四
+  - 技术负责人：王五
+
+# 文件末尾可以添加配置
+# Local Variables:
+# org-startup-folded: overview
+# End:</code></pre>
+      <h3>文件头属性</h3>
+      <p>Org 文件支持以 <code>#+</code> 开头的文件头属性：</p>
+      <table>
+        <thead>
+          <tr>
+            <th>属性</th>
+            <th>说明</th>
+            <th>示例</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>TITLE</code></td>
+            <td>文档标题</td>
+            <td><code>#+TITLE: 我的笔记</code></td>
+          </tr>
+          <tr>
+            <td><code>AUTHOR</code></td>
+            <td>作者</td>
+            <td><code>#+AUTHOR: 张三</code></td>
+          </tr>
+          <tr>
+            <td><code>DATE</code></td>
+            <td>日期</td>
+            <td><code>#+DATE: 2024-03-10</code></td>
+          </tr>
+          <tr>
+            <td><code>STARTUP</code></td>
+            <td>启动选项</td>
+            <td><code>#+STARTUP: overview</code></td>
+          </tr>
+          <tr>
+            <td><code>TAGS</code></td>
+            <td>默认标签</td>
+            <td><code>#+TAGS: 工作 个人</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="org-agenda">
+      <h2>日程视图简介</h2>
+      <p>Org Mode 的日程视图是一个强大的功能，可以汇总所有 Org 文件中的任务和日程。</p>
+      <h3>设置 Org 文件列表</h3>
+      <p>首先，需要在配置中指定哪些文件参与日程：</p>
+      <pre><code>;; 在 ~/.emacs.d/init.el 中添加
+(setq org-agenda-files '("~/org/work.org"
+                         "~/org/personal.org"))</code></pre>
+      <h3>打开日程视图</h3>
+      <p>按 <kbd>C-c a</kbd>（如果已配置全局快捷键）或 <kbd>M-x org-agenda</kbd>，然后选择：</p>
+      <ul>
+        <li><kbd>a</kbd>：显示周视图（默认）</li>
+        <li><kbd>t</kbd>：显示所有 TODO 项目</li>
+        <li><kbd>m</kbd>：显示匹配的标签</li>
+        <li><kbd>s</kbd>：搜索文本</li>
+      </ul>
+      <div class="info">
+        <strong>说明：</strong>日程视图会从所有指定的 Org 文件中收集信息，并按时间或状态组织显示。这是 Org Mode 最强大的功能之一。
+      </div>
+    </section>
+
+    <section id="org-capture">
+      <h2>快速捕获简介</h2>
+      <p>Org Capture 允许你快速记录想法、任务、笔记等，而不用离开当前工作。</p>
+      <h3>配置 Capture 模板</h3>
+      <pre><code>;; 在 ~/.emacs.d/init.el 中添加
+(setq org-capture-templates
+      '(("t" "待办事项" entry (file "~/org/inbox.org")
+         "* TODO %?\n  %i\n  %a")
+        ("n" "笔记" entry (file "~/org/notes.org")
+         "* %? :NOTE:\n  %U\n  %i\n  %a")
+        ("j" "日记" entry (file+datetree "~/org/diary.org")
+         "* %?\n  %U\n  %i")))</code></pre>
+      <h3>使用 Capture</h3>
+      <ol>
+        <li>按 <kbd>C-c c</kbd>（如果已配置全局快捷键）</li>
+        <li>选择模板（如按 <kbd>t</kbd> 表示待办事项）</li>
+        <li>在新缓冲区中输入内容</li>
+        <li>按 <kbd>C-c C-c</kbd> 确认并保存</li>
+        <li>或按 <kbd>C-c C-k</kbd> 取消</li>
+      </ol>
+      <div class="tip">
+        <strong>工作流程：</strong>将 Capture 作为你的"收件箱"，快速记录所有想法和任务，然后定期整理到相应的 Org 文件中。
+      </div>
+    </section>
+
+    <section id="export-basics">
+      <h2>导出功能简介</h2>
+      <p>Org Mode 可以将文档导出为多种格式：</p>
+      <h3>基本导出命令</h3>
+      <pre><code>C-c C-e    # 导出命令前缀
+
+# 常用导出选项
+C-c C-e h  # 导出为 HTML
+C-c C-e l  # 导出为 LaTeX
+C-c C-e p  # 导出为 PDF（通过 LaTeX）
+C-c C-e m  # 导出为 Markdown
+C-c C-e o  # 导出为 OpenDocument
+C-c C-e t  # 导出为 Texinfo</code></pre>
+      <h3>导出选项</h3>
+      <p>在文件头添加导出选项：</p>
+      <pre><code>#+TITLE: 我的文档
+#+OPTIONS: toc:t num:2
+#+OPTIONS: H:3 ^:nil
+
+* 第一章
+...
+
+* 第二章
+...</code></pre>
+      <div class="info">
+        <strong>提示：</strong>导出功能是 Org Mode 的强大特性之一。你可以用 Org Mode 编写文档，然后导出为漂亮的 HTML 网页或 PDF 文档。
+      </div>
+    </section>
+
+    <section id="next-steps">
+      <h2>课程小结</h2>
+      <p>本课介绍了 Org Mode 的核心概念和基本功能。你已经了解了：</p>
+      <ul>
+        <li>Org Mode 的三个核心概念：大纲、任务、日程</li>
+        <li>如何快速创建和使用 Org 文件</li>
+        <li>Org 文件的基本结构</li>
+        <li>日程视图和快速捕获的简介</li>
+        <li>导出功能的基本概念</li>
+      </ul>
+      <div class="tip">
+        <strong>下一步：</strong>从下一课开始，我们将深入每个功能。首先从创建第一个笔记开始，一步步掌握 Org Mode 的强大功能。
+      </div>
+      <div class="warning">
+        <strong>学习建议：</strong>Org Mode 功能丰富，但不要试图一次掌握所有功能。建议循序渐进，从简单的笔记开始，逐步探索更高级的功能。
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <nav class="page-nav">
+      <a href="03-configuration.html" class="prev-page">← 上一课：配置文件入门</a>
+      <a href="05-first-notes.html" class="next-page">下一课：创建第一个笔记 →</a>
+    </nav>
+  </footer>
+</body>
+</html>

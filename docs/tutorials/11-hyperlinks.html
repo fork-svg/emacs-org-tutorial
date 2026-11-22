@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 11 课：超链接 - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>第 11 课：超链接</h1>
+
+            <p>Org Mode 支持丰富的超链接系统，可以在文档内部、文档之间、以及文档与外部资源之间建立连接。链接是构建知识网络的关键工具，让你可以在笔记之间自由跳转和关联。</p>
+
+            <h2>基本链接格式</h2>
+
+            <p>Org 链接的基本语法是使用双方括号：</p>
+
+            <pre><code>[[链接目标]]
+[[链接目标][链接描述]]</code></pre>
+
+            <p>最简单的链接：</p>
+
+            <pre><code>[[https://orgmode.org]]
+[[https://www.gnu.org/software/emacs/][Emacs 官网]]</code></pre>
+
+            <p>当链接带有描述时，显示的是描述文本；当只有链接目标时，显示的是目标 URL。</p>
+
+            <div class="tip">
+                默认情况下，Org 链接在编辑器中以折叠形式显示——只显示描述文本，链接目标被隐藏。将光标移到链接上时，链接目标会临时显示在回显区域。
+            </div>
+
+            <h3>自动识别链接</h3>
+
+            <p>Org 还会自动识别常见的 URL 格式，即使不使用双方括号：</p>
+
+            <pre><code>https://orgmode.org
+http://www.example.com
+ftp://files.example.com
+mailto:user@example.com</code></pre>
+
+            <p>这些 URL 在 Org 文件中也会被识别为可点击的链接。</p>
+
+            <h2>链接操作</h2>
+
+            <p>以下是最常用的链接操作命令：</p>
+
+            <h3>打开链接</h3>
+
+            <p>使用 <kbd>C-c C-o</kbd> 打开光标所在的链接：</p>
+
+            <ul>
+                <li>网页链接 — 在默认浏览器中打开</li>
+                <li>文件链接 — 在 Emacs 中打开文件</li>
+                <li>内部链接 — 跳转到文档内的目标位置</li>
+                <li>邮件链接 — 打开邮件客户端</li>
+            </ul>
+
+            <h3>插入链接</h3>
+
+            <p>使用 <kbd>C-c C-l</kbd> 插入新链接：</p>
+
+            <ol class="steps">
+                <li>按 <kbd>C-c C-l</kbd></li>
+                <li>在迷你缓冲区中输入链接目标（URL 或文件路径等）</li>
+                <li>按 <kbd>TAB</kbd> 可以输入链接描述</li>
+                <li>按 <kbd>RET</kbd> 确认</li>
+            </ol>
+
+            <div class="info">
+                如果你已经选中了一段文本，然后按 <kbd>C-c C-l</kbd>，选中的文本会自动成为链接的描述。这是一个非常方便的快捷方式。
+            </div>
+
+            <h3>编辑链接</h3>
+
+            <p>将光标放在链接上，按 <kbd>C-c C-l</kbd> 可以编辑现有的链接。Emacs 会显示当前的链接目标和描述，你可以修改它们。</p>
+
+            <h2>内部链接</h2>
+
+            <p>内部链接用于在同一个 Org 文件内跳转。你可以链接到标题或命名的目标。</p>
+
+            <h3>链接到标题</h3>
+
+            <pre><code>* 项目概述
+  详细内容请参见 [[项目计划]]
+
+* 项目计划
+  这里包含了详细的项目时间安排...
+
+* 技术选型
+  我们选择了以下技术方案，详见 [[技术方案]]
+
+* 技术方案
+  前端使用 React，后端使用 Python...</code></pre>
+
+            <p>链接目标是标题的文本内容（不包含星号）。Org 会在文件中搜索匹配的标题并跳转。</p>
+
+            <h3>链接到自定义目标</h3>
+
+            <p>使用 <code>&lt;&lt;目标名称&gt;&gt;</code> 定义自定义目标，然后用 <code>[[目标名称]]</code> 链接：</p>
+
+            <pre><code>* 参考文档
+
+  关于安装步骤，请参阅 &lt;&lt;install&gt;&gt;
+  关于配置说明，请参阅 &lt;&lt;config&gt;&gt;
+
+** 安装指南
+   &lt;&lt;install&gt;&gt;
+   1. 下载 Emacs
+   2. 安装依赖包
+   ...
+
+** 配置说明
+   &lt;&lt;config&gt;&gt;
+   配置文件位于 ~/.emacs.d/init.el
+   ...</code></pre>
+
+            <div class="tip">
+                自定义目标可以放在文档的任何位置，不限于标题行。这使得你可以在正文中的任何细节处创建可链接的锚点。
+            </div>
+
+            <h2>外部链接</h2>
+
+            <p>Org 支持多种类型的外部链接。</p>
+
+            <h3>文件链接</h3>
+
+            <p>链接到本地文件或目录：</p>
+
+            <pre><code>[[file:~/Documents/report.pdf][查看报告]]
+[[file:/home/user/notes/ideas.org][想法笔记]]
+[[file:../images/photo.png]]
+[[file:~/projects/][项目目录]]</code></pre>
+
+            <p>文件路径可以使用绝对路径或相对路径，也支持 <code>~</code> 展开为用户主目录。</p>
+
+            <h3>网页链接</h3>
+
+            <pre><code>[[https://orgmode.org][Org Mode 官网]]
+[[https://github.com][GitHub]]
+[[https://emacs-china.org][Emacs 中文社区]]</code></pre>
+
+            <div class="info">
+                网页链接会在系统的默认浏览器中打开。如果你希望某些链接在 Emacs 内置浏览器（eww）中打开，可以通过自定义 <code>org-link-frame-setup</code> 来配置。
+            </div>
+
+            <h3>邮件链接</h3>
+
+            <pre><code>[[mailto:user@example.com][给我发邮件]]
+[[bbdb:张三]]
+[[gnus:nnmail+archive:12345][邮件主题]]</code></pre>
+
+            <h3>其他链接类型</h3>
+
+            <pre><code>[[id:unique-id-string][通过 ID 链接]]
+[[info:org#Links][Org 手册链接章节]]
+[[shell:ls -la][运行 Shell 命令]]
+[[elisp:org-agenda-list][执行 Emacs Lisp]]</code></pre>
+
+            <h2>链接搜索</h2>
+
+            <p>文件链接可以附加搜索选项，打开后直接定位到文件中的特定位置：</p>
+
+            <pre><code>[[file:report.org::搜索词]]
+[[file:manual.pdf::5]]          打开 PDF 第 5 页
+[[file:code.py::def function]]  跳转到函数定义处
+[[file:notes.org::*标题名]]     跳转到指定标题</code></pre>
+
+            <p>搜索选项使用 <code>::</code> 分隔文件路径和搜索内容。</p>
+
+            <h2>链接缩写</h2>
+
+            <p>当你的笔记中频繁使用同一类链接时，可以定义缩写来简化输入。</p>
+
+            <h3>文件级别定义</h3>
+
+            <pre><code>#+LINK: gh https://github.com/%s
+#+LINK: wiki https://en.wikipedia.org/wiki/%s
+#+LINK: bug https://bugs.example.com/%s
+
+使用缩写：
+[[gh:fork-svg/emacs-org-tutorial][GitHub 仓库]]
+[[wiki:Emacs][Emacs 维基百科]]
+[[bug:1234][Bug #1234]]</code></pre>
+
+            <p><code>%s</code> 是占位符，会被链接中缩写后面的部分替换。</p>
+
+            <h3>全局定义</h3>
+
+            <p>在 Emacs 配置文件中定义全局缩写：</p>
+
+            <pre><code>(setq org-link-abbrev-alist
+      '(("gh" . "https://github.com/%s")
+        ("wiki" . "https://en.wikipedia.org/wiki/%s")
+        ("google" . "https://www.google.com/search?q=%s")
+        ("gmap" . "https://maps.google.com/?q=%s")
+        ("emacs" . "https://www.gnu.org/software/emacs/manual/html_node/%s")))
+        ("org" . "https://orgmode.org/manual/%s")))</code></pre>
+
+            <div class="warning">
+            链接缩写在文件级别定义时，必须放在文件开头（标题之前）。全局定义则在 Emacs 配置中设置，对所有文件生效。
+            </div>
+
+            <h3>实用缩写示例</h3>
+
+            <pre><code>;; 在 init.el 中添加常用缩写
+(setq org-link-abbrev-alist
+      '(;; 开发相关
+        ("gh" . "https://github.com/%s")
+        ("gl" . "https://gitlab.com/%s")
+        ("so" . "https://stackoverflow.com/questions/%s")
+        ;; 文档相关
+        ("mdn" . "https://developer.mozilla.org/%s")
+        ("pydoc" . "https://docs.python.org/3/%s")
+        ;; 搜索
+        ("google" . "https://www.google.com/search?q=%s")
+        ("baidu" . "https://www.baidu.com/s?wd=%s")))</code></pre>
+
+            <h2>实战示例</h2>
+
+            <p>下面是一个综合运用各种链接的笔记示例：</p>
+
+            <pre><code>#+TITLE: 项目知识索引
+#+LINK: gh https://github.com/%s
+#+LINK: doc https://docs.example.com/%s
+
+* 项目资源
+
+** 代码仓库
+   - [[gh:fork-svg/project-main][主仓库]]
+   - [[gh:fork-svg/project-api][API 仓库]]
+   - [[gh:fork-svg/project-docs][文档仓库]]
+
+** 技术文档
+   - [[doc:getting-started][快速入门]]
+   - [[doc:api-reference][API 参考]]
+   - [[doc:deployment][部署指南]]
+
+** 相关资料
+   - [[https://orgmode.org][Org Mode 官网]]
+   - [[https://www.gnu.org/software/emacs/][Emacs 官网]]
+   - [[file:../references/design-doc.pdf][设计文档]]
+
+** 团队联系
+   - [[mailto:alice@example.com][Alice - 项目经理]]
+   - [[mailto:bob@example.com][Bob - 技术负责人]]
+   - [[mailto:charlie@example.com][Charlie - 设计师]]
+
+* 快速导航
+
+  安装指南见 &lt;&lt;install-guide&gt;&gt;
+  常见问题见 &lt;&lt;faq&gt;&gt;
+  更新日志见 &lt;&lt;changelog&gt;&gt;
+
+** 安装指南
+   &lt;&lt;install-guide&gt;&gt;
+   请参考 [[doc:getting-started]] 中的安装部分。
+
+** 常见问题
+   &lt;&lt;faq&gt;&gt;
+   遇到问题请先查看 [[so:tagged/emacs-org][Stack Overflow]]。
+
+** 更新日志
+   &lt;&lt;changelog&gt;&gt;
+   最新版本：v2.0 (2026-11-01)</code></pre>
+
+            <h2>常用命令速查</h2>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-o</kbd></td>
+                    <td>打开光标处的链接</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-l</kbd></td>
+                    <td>插入/编辑链接</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-x C-v</kbd></td>
+                    <td>切换链接显示/隐藏</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-RET</kbd></td>
+                    <td>在新链接上打开时拆分窗口</td>
+                </tr>
+            </table>
+
+            <h2>小结</h2>
+
+            <p>超链接系统是 Org Mode 知识管理能力的基石。通过内部链接，你可以在文档中构建非线性的知识结构；通过外部链接，你可以将笔记与互联网资源、本地文件、邮件等连接起来；通过链接缩写，你可以快速创建常用的链接模式。下一课我们将学习议程视图，把所有学到的 TODO、标签、日期功能整合到一个统一视图中。</p>
+
+            <div class="page-nav">
+                <a href="10-tables.html">← 上一课：表格和电子表格</a>
+                <a href="12-agenda.html">下一课：日程视图 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

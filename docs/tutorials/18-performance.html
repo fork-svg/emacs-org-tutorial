@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性能优化 - Emacs Org Mode 手把手教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">教程</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>第 18 课：性能优化</h1>
+
+            <p>当你使用 Org Mode 管理大量文件和数据时，性能可能成为问题。本课教你如何优化 Org Mode 的性能。</p>
+
+            <h2>大文件优化</h2>
+
+            <h3>延迟加载 Agenda 文件</h3>
+
+            <p>不要在启动时加载所有 agenda 文件：</p>
+
+            <pre><code>(setq org-agenda-inhibit-startup t)</code></pre>
+
+            <h3>减少 Agenda 文件</h3>
+
+            <p>只将需要查看的文件加入 agenda：</p>
+
+            <pre><code>(setq org-agenda-files '("~/org/work.org"
+                         "~/org/personal.org"))
+;; 不要使用目录
+;; (setq org-agenda-files '("~/org/"))  ; 会加载所有文件</code></pre>
+
+            <h3>归档旧任务</h3>
+
+            <p>定期将完成的任务移到归档文件：</p>
+
+            <pre><code>(setq org-archive-location "~/org/archive/%s_archive::")</code></pre>
+
+            <p>按 <kbd>C-c $</kbd> 归档当前条目。</p>
+
+            <h2>延迟加载和惰性求值</h2>
+
+            <h3>延迟加载 Org 模块</h3>
+
+            <pre><code>(with-eval-after-load 'org
+  ;; 只在需要时加载模块
+  (require 'org-tempo)
+  (require 'org-habit))</code></pre>
+
+            <h3>禁用不需要的功能</h3>
+
+            <pre><code>;; 禁用不需要的 org-modules
+(setq org-modules nil)
+
+;; 或使用 use-package
+(use-package org
+  :config
+  (setq org-modules '(ol-w3m ol-bbdb ol-bibtex)))</code></pre>
+
+            <h2>字体和显示优化</h2>
+
+            <h3>减少字体渲染开销</h3>
+
+            <pre><code>;; 使用等宽字体
+(set-frame-font "JetBrains Mono 14" nil t)
+
+;; 禁用抗锯齿（某些系统可能更快）
+(setq-default inhibit-compacting-font-caches t)</code></pre>
+
+            <h3>优化标题显示</h3>
+
+            <pre><code>;; 使用 org-indent 模式减少重绘
+(add-hook 'org-mode-hook 'org-indent-mode)
+
+;; 简化标题前缀符号
+(setq org-ellipsis " ▾")  ; 使用简单字符</code></pre>
+
+            <h2>推荐的扩展包</h2>
+
+            <h3>org-bullets / org-superstar</h3>
+
+            <p>美化标题符号：</p>
+
+            <pre><code>(use-package org-bullets
+  :hook (org-mode . org-bullets-mode)
+  :config
+  (setq org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))</code></pre>
+
+            <h3>org-tree-slide</h3>
+
+            <p>将大纲作为演示文稿：</p>
+
+            <pre><code>(use-package org-tree-slide
+  :bind (:map org-mode-map
+         ("C-c C-p" . org-tree-slide-move-previous-tree)
+         ("C-c C-n" . org-tree-slide-move-next-tree)
+         ("C-<" . org-tree-slide-content)
+         ("C->" . org-tree-slide-profile)))</code></pre>
+
+            <h3>helm-org / ivy-org</h3>
+
+            <p>增强搜索和导航：</p>
+
+            <pre><code>(use-package helm-org
+  :bind (("C-c n f" . helm-org-agenda-files-headlines)
+         ("C-c n h" . helm-org-headlines)))</code></pre>
+
+            <h3>org-download</h3>
+
+            <p>拖放图片到 Org 文件：</p>
+
+            <pre><code>(use-package org-download
+  :hook (org-mode . org-download-enable)
+  :config
+  (setq org-download-image-dir "~/org/images/"))</code></pre>
+
+            <h3>org-roam</h3>
+
+            <p>Zettelkasten 方法笔记管理：</p>
+
+            <pre><code>(use-package org-roam
+  :custom
+  (org-roam-directory "~/org/roam/")
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert))
+  :config
+  (org-roam-db-autosync-mode))</code></pre>
+
+            <h2>常见问题排查</h2>
+
+            <h3>Emacs 启动慢</h3>
+
+            <p>检查启动时间：</p>
+
+            <pre><code>M-x profiler-start RET cpu RET
+;; 使用一段时间
+M-x profiler-report RET</code></pre>
+
+            <p>常见解决方案：</p>
+
+            <pre><code>;; 延迟加载包
+(use-package org :defer t)
+
+;; 减少自动保存
+(setq auto-save-default nil)
+(setq auto-save-timeout 60)</code></pre>
+
+            <h3>Agenda 生成慢</h3>
+
+            <pre><code>;; 使用缓存
+(setq org-agenda-use-time-grid nil)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-skip-deadline-if-done t)
+
+;; 减少 agenda 跨度
+(setq org-agenda-span 'week)</code></pre>
+
+            <h3>导出慢</h3>
+
+            <pre><code>;; 使用异步导出
+(use-package ox-hugo
+  :config
+  (setq org-hugo-export-with-toc nil))
+
+;; 或减少导出选项
+(setq org-export-with-toc nil)
+(setq org-export-with-section-numbers nil)</code></pre>
+
+            <h3>文件打开慢</h3>
+
+            <pre><code>;; 禁用自动折叠
+(setq org-startup-folded nil)
+
+;; 禁用 indent 模式
+(remove-hook 'org-mode-hook 'org-indent-mode)
+
+;; 减少启动时的解析
+(setq org-startup-with-inline-images nil)</code></pre>
+
+            <h2>配置优化建议</h2>
+
+            <h3>推荐的配置模板</h3>
+
+            <pre><code>(use-package org
+  :defer t
+  :config
+  ;; 基本设置
+  (setq org-startup-folded 'content)
+  (setq org-startup-indented t)
+  (setq org-hide-emphasis-markers t)
+
+  ;; 性能优化
+  (setq org-agenda-inhibit-startup t)
+  (setq org-modules nil)
+
+  ;; 导出设置
+  (setq org-export-with-toc t)
+  (setq org-export-with-section-numbers t)
+
+  ;; Agenda 设置
+  (setq org-agenda-files '("~/org/active/"))
+  (setq org-agenda-span 'week)
+  (setq org-agenda-skip-scheduled-if-done t)
+
+  ;; 日志设置
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t))</code></pre>
+
+            <h2>监控性能</h2>
+
+            <p>使用这些命令监控 Emacs 性能：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>命令</th>
+                        <th>功能</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><kbd>M-x profiler-start</kbd></td>
+                        <td>开始性能分析</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>M-x profiler-report</kbd></td>
+                        <td>查看性能报告</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>M-x garbage-collect</kbd></td>
+                        <td>手动垃圾回收</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>M-x memory-report</kbd></td>
+                        <td>查看内存使用</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>下一步学习</h2>
+
+            <h3>深入学习资源</h3>
+
+            <ul>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">Org Mode 手册（中文翻译）</a> - 完整的参考手册</li>
+                <li><a href="https://orgmode.org/worg/" target="_blank">Worg</a> - 社区资源中心</li>
+                <li><a href="https://orgmode.org/manual/" target="_blank">官方英文手册</a></li>
+            </ul>
+
+            <h3>推荐书籍</h3>
+
+            <ul>
+                <li><em>Org Mode Compact Guide</em> - 入门指南</li>
+                <li><em>Organizing Life with Emacs</em> - 实际应用案例</li>
+            </ul>
+
+            <h3>社区</h3>
+
+            <ul>
+                <li>邮件列表：emacs-orgmode@gnu.org</li>
+                <li>IRC：#org-mode on irc.libera.chat</li>
+                <li>Reddit：r/emacs</li>
+            </ul>
+
+            <h2>小结</h2>
+
+            <p>恭喜你完成了本教程！现在你已经掌握了：</p>
+
+            <ul>
+                <li>Emacs 和 Org Mode 的基础</li>
+                <li>笔记、任务、日程管理</li>
+                <li>标签、属性、链接</li>
+                <li>表格和代码块</li>
+                <li>导出和发布</li>
+                <li>工作流自定义</li>
+                <li>性能优化技巧</li>
+            </ul>
+
+            <div class="info">
+                Org Mode 功能非常丰富，本教程只覆盖了核心部分。持续实践和探索，你会发现更多强大的功能！
+            </div>
+
+            <p>开始你的 Org Mode 之旅吧！🎉</p>
+        </div>
+
+        <div class="page-nav">
+            <a href="17-integration.html">← 上一课</a>
+            <span></span>
+        </div>
+
+        <div class="footer">
+            <p><strong>🎉 恭喜完成所有课程！</strong></p>
+            <p><a href="../index.html">← 返回教程首页</a></p>
+        </div>
+    </div>
+</body>
+</html>

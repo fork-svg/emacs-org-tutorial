@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第 2 课：Emacs 基本操作 - Emacs Org Mode 教程</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <nav class="breadcrumb">
+    <a href="../index.html">首页</a> &gt;
+    <span>第 2 课：Emacs 基本操作</span>
+  </nav>
+
+  <header>
+    <h1>第 2 课：Emacs 基本操作</h1>
+    <p class="subtitle">掌握键绑定、文件操作、编辑技巧和缓冲区管理</p>
+  </header>
+
+  <main>
+    <section id="introduction">
+      <h2>课程简介</h2>
+      <p>Emacs 的强大之处在于其高度一致的键绑定系统。一旦你理解了这套系统，就能快速掌握各种操作。本课将介绍 Emacs 的核心概念和基本操作。</p>
+      <div class="info">
+        <strong>学习目标：</strong>掌握键绑定概念、文件操作、基本编辑和缓冲区管理，熟练使用帮助系统。
+      </div>
+    </section>
+
+    <section id="keybindings">
+      <h2>键绑定概念</h2>
+      <p>Emacs 使用一套简洁的快捷键表示法，理解这套表示法是使用 Emacs 的基础。</p>
+      <h3>基本表示法</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>符号</th>
+            <th>含义</th>
+            <th>示例</th>
+            <th>实际操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd>C</kbd></td>
+            <td>Ctrl 键</td>
+            <td><kbd>C-x</kbd></td>
+            <td>按住 Ctrl 再按 x</td>
+          </tr>
+          <tr>
+            <td><kbd>M</kbd></td>
+            <td>Alt/Meta 键</td>
+            <td><kbd>M-x</kbd></td>
+            <td>按住 Alt 再按 x</td>
+          </tr>
+          <tr>
+            <td><kbd>S</kbd></td>
+            <td>Shift 键</td>
+            <td><kbd>S-TAB</kbd></td>
+            <td>按住 Shift 再按 Tab</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>键序列表示法</h3>
+      <p>空格分隔的多个键表示依次按下的序列：</p>
+      <pre><code>C-x C-f    # 先按 Ctrl+x，再按 Ctrl+f
+C-x C-s    # 先按 Ctrl+x，再按 Ctrl+s
+M-x save-buffer  # 按 Alt+x，然后输入命令名</code></pre>
+      <h3>常用前缀键</h3>
+      <ul>
+        <li><kbd>C-x</kbd>：扩展命令前缀，后跟具体操作键</li>
+        <li><kbd>C-c</kbd>：模式相关命令前缀（在 Org Mode 中尤为重要）</li>
+        <li><kbd>M-x</kbd>：输入任意命令名称</li>
+        <li><kbd>C-h</kbd>：帮助前缀</li>
+        <li><kbd>C-g</kbd>：取消当前操作（非常重要！）</li>
+      </ul>
+      <div class="tip">
+        <strong>黄金法则：</strong>如果你不知道按了什么，或者想取消正在执行的操作，按 <kbd>C-g</kbd> 可以取消几乎任何操作。
+      </div>
+    </section>
+
+    <section id="file-operations">
+      <h2>文件操作</h2>
+      <h3>打开/创建文件</h3>
+      <p>要打开一个文件或创建新文件：</p>
+      <pre><code>C-x C-f    # find-file：打开文件</code></pre>
+      <p>Emacs 会提示你输入文件路径。输入路径后按回车即可打开。如果文件不存在，Emacs 会创建一个新缓冲区。</p>
+      <h3>保存文件</h3>
+      <p>保存当前文件：</p>
+      <pre><code>C-x C-s    # save-buffer：保存当前文件
+C-x C-w    # write-file：另存为</code></pre>
+      <h3>关闭文件和退出</h3>
+      <pre><code>C-x C-c    # save-buffers-kill-terminal：保存并退出 Emacs
+C-x k      # kill-buffer：关闭当前缓冲区
+C-x C-f    # 打开另一个文件（自动切换）</code></pre>
+      <div class="warning">
+        <strong>注意：</strong>退出 Emacs 前请确保已保存所有修改。如果未保存，Emacs 会提示你确认是否放弃未保存的更改。
+      </div>
+    </section>
+
+    <section id="basic-editing">
+      <h2>基本编辑</h2>
+      <h3>光标移动</h3>
+      <p>Emacs 提供了丰富的移动命令，以下是最常用的：</p>
+      <table>
+        <thead>
+          <tr>
+            <th>快捷键</th>
+            <th>功能</th>
+            <th>记忆技巧</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd>C-f</kbd></td>
+            <td>向前移动一个字符</td>
+            <td>forward</td>
+          </tr>
+          <tr>
+            <td><kbd>C-b</kbd></td>
+            <td>向后移动一个字符</td>
+            <td>backward</td>
+          </tr>
+          <tr>
+            <td><kbd>C-n</kbd></td>
+            <td>移动到下一行</td>
+            <td>next line</td>
+          </tr>
+          <tr>
+            <td><kbd>C-p</kbd></td>
+            <td>移动到上一行</td>
+            <td>previous line</td>
+          </tr>
+          <tr>
+            <td><kbd>C-a</kbd></td>
+            <td>移动到行首</td>
+            <td>beginning of line</td>
+          </tr>
+          <tr>
+            <td><kbd>C-e</kbd></td>
+            <td>移动到行尾</td>
+            <td>end of line</td>
+          </tr>
+          <tr>
+            <td><kbd>M-f</kbd></td>
+            <td>向前移动一个词</td>
+            <td>forward word</td>
+          </tr>
+          <tr>
+            <td><kbd>M-b</kbd></td>
+            <td>向后移动一个词</td>
+            <td>backward word</td>
+          </tr>
+          <tr>
+            <td><kbd>C-v</kbd></td>
+            <td>向下翻页</td>
+            <td>scroll down (view)</td>
+          </tr>
+          <tr>
+            <td><kbd>M-v</kbd></td>
+            <td>向上翻页</td>
+            <td>scroll up</td>
+          </tr>
+          <tr>
+            <td><kbd>M-&lt;</kbd></td>
+            <td>移动到文件开头</td>
+            <td>beginning of buffer</td>
+          </tr>
+          <tr>
+            <td><kbd>M-&gt;</kbd></td>
+            <td>移动到文件末尾</td>
+            <td>end of buffer</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>删除操作</h3>
+      <pre><code>C-d        # 删除光标后的字符
+DEL        # 删除光标前的字符（Backspace）
+M-d        # 删除光标后的一个词
+M-DEL      # 删除光标前的一个词
+C-k        # 删除从光标到行尾的所有内容
+C-S-backspace  # 删除整行</code></pre>
+      <h3>复制和粘贴</h3>
+      <p>Emacs 使用"kill ring"（剪贴板环）来管理复制的内容：</p>
+      <pre><code>C-SPC      # 开始标记区域（set-mark-command）
+C-w        # 剪切选中的区域到 kill ring
+M-w        # 复制选中的区域到 kill ring（不删除）
+C-y        # 粘贴最近复制的内容（yank）
+M-y        # 循环切换 kill ring 中的历史内容</code></pre>
+      <h3>撤销和重做</h3>
+      <pre><code>C-/        # 撤销
+C-x u      # 撤销（同上）
+C-g C-/    # 重做（撤销撤销）</code></pre>
+      <div class="tip">
+        <strong>提示：</strong>Emacs 的 kill ring 可以保存多次复制/剪切的内容。使用 <kbd>M-y</kbd> 可以在粘贴后循环切换不同的历史内容。
+      </div>
+    </section>
+
+    <section id="buffer-management">
+      <h2>缓冲区管理</h2>
+      <p>Emacs 中每个打开的文件或信息都在一个"缓冲区"（buffer）中。理解缓冲区管理是高效使用 Emacs 的关键。</p>
+      <h3>常用缓冲区操作</h3>
+      <pre><code>C-x b      # 切换到另一个缓冲区
+C-x C-b    # 列出所有缓冲区
+C-x k      # 关闭（销毁）一个缓冲区
+C-x LEFT   # 切换到上一个缓冲区
+C-x RIGHT  # 切换到下一个缓冲区</code></pre>
+      <h3>缓冲区列表操作</h3>
+      <p>在缓冲区列表（<kbd>C-x C-b</kbd>）中，可以使用以下快捷键：</p>
+      <pre><code>d          # 标记为删除
+s          # 标记为保存
+u          # 取消标记
+x          # 执行标记的操作
+~          # 标记为只读</code></pre>
+      <div class="info">
+        <strong>缓冲区 vs 文件：</strong>不是所有缓冲区都对应文件。例如，<code>*Messages*</code> 缓冲区显示 Emacs 的消息日志，<code>*scratch*</code> 是一个临时的笔记缓冲区。
+      </div>
+    </section>
+
+    <section id="help-system">
+      <h2>帮助系统</h2>
+      <p>Emacs 拥有强大的内置帮助系统，是学习 Emacs 的最佳工具。</p>
+      <h3>基本帮助命令</h3>
+      <pre><code>C-h C-h    # 显示帮助菜单
+C-h k      # 描述一个按键绑定的功能
+C-h f      # 描述一个函数
+C-h v      # 描述一个变量
+C-h m      # 显示当前模式的信息
+C-h a      # 搜索与关键词匹配的命令
+C-h t      # 启动内置教程</code></pre>
+      <h3>实用示例</h3>
+      <p>如果你忘记了某个快捷键的功能：</p>
+      <ol>
+        <li>按 <kbd>C-h k</kbd></li>
+        <li>然后按你要查询的快捷键（如 <kbd>C-x C-s</kbd>）</li>
+        <li>Emacs 会显示该快捷键的功能说明</li>
+      </ol>
+      <p>如果你知道功能但不知道快捷键：</p>
+      <ol>
+        <li>按 <kbd>C-h a</kbd>（Apropos）</li>
+        <li>输入功能关键词（如 "save"）</li>
+        <li>Emacs 会列出所有匹配的命令</li>
+      </ol>
+      <div class="tip">
+        <strong>推荐：</strong>首次使用 Emacs 的用户强烈建议按 <kbd>C-h t</kbd> 完成内置教程。这个教程大约需要 30 分钟，但能让你快速熟悉 Emacs 的基本操作。
+      </div>
+    </section>
+
+    <section id="minibuffer">
+      <h2>迷你缓冲区</h2>
+      <p>Emacs 底部的小型输入区域称为"迷你缓冲区"（minibuffer），用于输入命令参数、文件名等。</p>
+      <h3>迷你缓冲区操作</h3>
+      <pre><code>TAB        # 自动补全
+M-n        # 查看下一个历史记录
+M-p        # 查看上一个历史记录
+C-g        # 取消输入
+RET        # 确认输入</code></pre>
+      <h3>使用 M-x 执行命令</h3>
+      <p>几乎所有 Emacs 命令都可以通过 <kbd>M-x</kbd> 执行：</p>
+      <pre><code>M-x save-buffer    # 执行保存命令
+M-x org-mode       # 切换到 Org Mode
+M-x describe-key   # 等同于 C-h k
+M-x list-buffers   # 等同于 C-x C-b</code></pre>
+      <div class="info">
+        <strong>提示：</strong>使用 <kbd>M-x</kbd> 时支持自动补全。输入部分命令名后按 <kbd>TAB</kbd> 可以补全，按 <kbd>TAB</kbd> 两次可以列出所有匹配项。
+      </div>
+    </section>
+
+    <section id="search-replace">
+      <h2>搜索和替换</h2>
+      <h3>搜索</h3>
+      <pre><code>C-s        # 增量搜索（向下）
+C-r        # 增量搜索（向上）
+C-M-s      # 正则表达式搜索（向下）
+C-M-r      # 正则表达式搜索（向上）</code></pre>
+      <p>在增量搜索中：</p>
+      <pre><code>C-s        # 跳转到下一个匹配
+C-r        # 跳转到上一个匹配
+RET        # 结束搜索，光标留在当前位置
+C-g        # 取消搜索，回到搜索前的位置</code></pre>
+      <h3>替换</h3>
+      <pre><code>M-%        # 交互式替换（query-replace）
+M-x replace-regexp  # 正则表达式替换</code></pre>
+      <p>在交互式替换中，对每个匹配项可以：</p>
+      <pre><code>SPC / y    # 替换并跳转到下一个
+n          # 不替换，跳转到下一个
+!          # 替换所有剩余的匹配
+^          # 回到上一个匹配
+RET        # 退出替换
+C-r        # 进入递归编辑模式</code></pre>
+    </section>
+
+    <section id="windows">
+      <h2>窗口分割</h2>
+      <p>Emacs 的"窗口"指的是缓冲区在屏幕上的显示区域，不同于操作系统的窗口概念。</p>
+      <pre><code>C-x 2      # 水平分割窗口（上下）
+C-x 3      # 垂直分割窗口（左右）
+C-x o      # 切换到其他窗口（o = other）
+C-x 0      # 关闭当前窗口
+C-x 1      # 只保留当前窗口，关闭其他所有窗口
+C-x ^      # 增加当前窗口高度
+C-x }      # 增加当前窗口宽度</code></pre>
+      <div class="tip">
+        <strong>提示：</strong>可以在不同窗口中显示同一个文件的不同部分，这对于编辑长文档非常有用。
+      </div>
+    </section>
+
+    <section id="summary">
+      <h2>课程小结</h2>
+      <p>本课涵盖了 Emacs 的核心操作。这些知识是学习 Org Mode 的基础。建议多练习这些快捷键，直到形成肌肉记忆。</p>
+      <h3>关键要点回顾</h3>
+      <ul>
+        <li>理解 <kbd>C</kbd>、<kbd>M</kbd>、<kbd>S</kbd> 的含义</li>
+        <li>掌握文件操作：<kbd>C-x C-f</kbd>、<kbd>C-x C-s</kbd>、<kbd>C-x C-c</kbd></li>
+        <li>熟悉基本移动和编辑快捷键</li>
+        <li>学会使用 <kbd>C-g</kbd> 取消操作</li>
+        <li>善用帮助系统：<kbd>C-h</kbd> 前缀</li>
+      </ul>
+      <div class="info">
+        <strong>下一步：</strong>在下一课中，你将学习如何配置 Emacs，为使用 Org Mode 做准备。
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <nav class="page-nav">
+      <a href="01-install-emacs.html" class="prev-page">← 上一课：安装 Emacs</a>
+      <a href="03-configuration.html" class="next-page">下一课：配置文件入门 →</a>
+    </nav>
+  </footer>
+</body>
+</html>

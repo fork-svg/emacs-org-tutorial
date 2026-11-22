@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 13 课：捕获和附件 - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">← 回到首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>📥 第 13 课：捕获和附件</h1>
+            <p>在本课中，你将学习 Org Mode 最强大的功能之一——<strong>Capture</strong>（捕获）。Capture 让你能在任何时刻快速记录想法、任务和笔记，而不打断当前工作流。同时，你还将学习如何管理附件文件。</p>
+
+            <h2>什么是 Capture？</h2>
+            <p>Capture 是 Org Mode 的快速记录系统。它的核心理念是：<strong>以最低摩擦捕获任何想法</strong>。无论你在 Emacs 中做什么，只需一个快捷键就能打开捕获模板，快速记录，然后回到原来的工作。</p>
+
+            <div class="tip">
+                Capture 和 Agenda 是 Org Mode 的两大核心功能。Agenda 在第 12 课已经介绍，而 Capture 则是你每天使用最频繁的功能之一。
+            </div>
+
+            <h2>基本捕获流程</h2>
+            <p>启动捕获的命令是 <kbd>C-c c</kbd>。按下后，Emacs 会提示你选择一个捕获模板。</p>
+
+            <h3>第一步：配置 Capture 模板</h3>
+            <p>在使用 Capture 之前，你需要在配置文件中定义至少一个模板。打开 <code>~/.emacs.d/init.el</code>，添加以下配置：</p>
+
+            <pre><code>;; 设置默认的捕获文件
+(setq org-default-notes-file "~/org/notes.org")
+
+;; 定义捕获模板
+(setq org-capture-templates
+      '(("t" "待办任务" entry (file "~/org/todo.org")
+         "* TODO %?\n  %i\n  %a")
+        ("n" "快速笔记" entry (file "~/org/notes.org")
+         "* %?\n  %u\n  %i")
+        ("j" "日记" entry (file+datetree "~/org/diary.org")
+         "* %?\n  %U\n  %i")))
+</code></pre>
+
+            <div class="info">
+                <code>org-capture-templates</code> 是一个列表，每个元素定义一个捕获模板。模板的第一个元素是快捷键（如 <code>"t"</code>），第二个是描述。
+            </div>
+
+            <h3>第二步：使用捕获</h3>
+            <p>现在你可以在任何时候按 <kbd>C-c c</kbd> 开始捕获：</p>
+
+            <ol class="steps">
+                <li>按 <kbd>C-c c</kbd>，迷你缓冲区显示模板列表</li>
+                <li>按 <kbd>t</kbd> 选择"待办任务"模板</li>
+                <li>Emacs 打开一个新的捕获窗口，显示模板内容</li>
+                <li>在 <code>%?</code> 的位置（光标初始位置）输入任务内容</li>
+                <li>按 <kbd>C-c C-c</kbd> 完成捕获，内容保存到目标文件</li>
+                <li>如果想取消，按 <kbd>C-c C-k</kbd></li>
+            </ol>
+
+            <h2>深入理解捕获模板</h2>
+            <p>每个捕获模板由多个字段组成，我们来逐一解析：</p>
+
+            <pre><code>;; 模板结构分解
+(KEY DESCRIPTION TYPE TARGET TEMPLATE)
+
+;; 示例：
+("t"          ;; KEY - 快捷键
+ "待办任务"    ;; DESCRIPTION - 描述
+ entry        ;; TYPE - 条目类型
+ (file "~/org/todo.org")  ;; TARGET - 目标位置
+ "* TODO %?\n  %i\n  %a") ;; TEMPLATE - 模板文本
+</code></pre>
+
+            <h3>条目类型（Type）</h3>
+            <table>
+                <tr><th>类型</th><th>说明</th><th>用途</th></tr>
+                <tr><td><code>entry</code></td><td>Org 条目</td><td>最常用的类型，创建一个标题</td></tr>
+                <tr><td><code>item</code></td><td>列表项</td><td>添加到 plain list</td></tr>
+                <tr><td><code>checkitem</code></td><td>复选框项</td><td>添加到 check list</td></tr>
+                <tr><td><code>table-line</code></td><td>表格行</td><td>添加到表格</td></tr>
+                <tr><td><code>plain</code></td><td>纯文本</td><td>插入纯文本到文件</td></tr>
+            </table>
+
+            <h3>目标位置（Target）</h3>
+            <p>目标位置决定了捕获的内容存放在哪里：</p>
+
+            <pre><code>;; 常用目标位置
+(file "~/org/notes.org")          ;; 文件末尾
+(file+headline "~/org/todo.org" "任务")  ;; 特定标题下
+(file+olp "~/org/todo.org" "工作" "项目A")  ;; 多级路径
+(file+datetree "~/org/diary.org")  ;; 日期树
+(file+function "~/org/archive.org" my-func)  ;; 自定义函数
+</code></pre>
+
+            <h3>模板扩展（Template Expansions）</h3>
+            <p>模板文本中可以使用多种 <code>%</code> 占位符：</p>
+
+            <table>
+                <tr><th>占位符</th><th>说明</th></tr>
+                <tr><td><code>%?</code></td><td>光标初始位置</td></tr>
+                <tr><td><code>%t</code></td><td>时间戳（日期，无时间）</td></tr>
+                <tr><td><code>%T</code></td><td>时间戳（日期和时间）</td></tr>
+                <tr><td><code>%u</code></td><td>非活跃时间戳（日期）</td></tr>
+                <tr><td><code>%U</code></td><td>非活跃时间戳（日期和时间）</td></tr>
+                <tr><td><code>%i</code></td><td>调用 Capture 时选中的文本</td></tr>
+                <tr><td><code>%a</code></td><td>当前上下文的链接</td></tr>
+                <tr><td><code>%n</code></td><td>当前用户名</td></tr>
+                <tr><td><code>%c</code></td><td>当前 kill-ring 内容</td></tr>
+            </table>
+
+            <div class="tip">
+                组合使用这些占位符可以创建非常实用的模板。比如用 <code>%i</code> 和 <code>%a</code> 从网页或代码中快速摘录内容。
+            </div>
+
+            <h2>高级捕获模板</h2>
+
+            <h3>带选择的模板</h3>
+            <p>你可以在模板中使用提示让用户选择：</p>
+
+            <pre><code>(setq org-capture-templates
+      '(("p" "项目任务" entry (file "~/org/projects.org")
+         "* TODO %^{任务描述}\n  :PROPERTIES:\n  :项目: %^{项目名|工作|个人|学习}\n  :优先级: %^{优先级|A|B|C}\n  :END:\n  %?\n  %u")))
+</code></pre>
+
+            <p><code>%^{prompt}</code> 会在捕获时弹出提示让你输入值。<code>%^{prompt|default1|default2}</code> 形式提供默认选择。</p>
+
+            <h3>带子模板的分组</h3>
+            <p>你可以将模板分组，使菜单更清晰：</p>
+
+            <pre><code>(setq org-capture-templates
+      '(("t" "任务")  ;; 分组标题
+        ("tt" "待办任务" entry (file "~/org/todo.org")
+         "* TODO %?\n  %u")
+        ("ts" "计划任务" entry (file "~/org/todo.org")
+         "* TODO %?\n  SCHEDULED: %t")
+        ("n" "笔记")  ;; 另一个分组
+        ("nw" "工作笔记" entry (file+headline "~/org/notes.org" "工作")
+         "* %? :work:\n  %U")
+        ("np" "个人笔记" entry (file+headline "~/org/notes.org" "个人")
+         "* %? :personal:\n  %U")))
+</code></pre>
+
+            <h2>从其他应用捕获</h2>
+            <p>Capture 的强大之处还在于可以从外部调用：</p>
+
+            <pre><code>;; 使用 emacsclient 从命令行捕获
+emacsclient -c -a "" -e "(org-capture)"
+
+;; 在 shell 脚本中快速记笔记
+emacsclient -c -e '(org-capture nil "n")'
+
+;; 使用 URL handler 从浏览器捕获
+;; 需要配置 org-protocol
+(setq org-protocol-protocol-alist
+      '(("org-capture"
+         :protocol "capture"
+         :function org-protocol-capture
+         :kill-client t)))
+</code></pre>
+
+            <div class="info">
+                通过 <code>org-protocol</code>，你可以从浏览器、邮件客户端等外部应用直接发送内容到 Org Capture。这需要额外配置 emacsclient 作为后台服务。
+            </div>
+
+            <h2>附件管理</h2>
+            <p>Org Mode 支持将文件（如图片、PDF、代码文件）作为附件关联到标题。</p>
+
+            <h3>启用附件系统</h3>
+            <pre><code>;; 启用附件管理
+(require 'org-attach)
+
+;; 设置附件存储方式
+(setq org-attach-id-dir "~/org/attach/")  ;; 附件存储目录
+(setq org-attach-store-link-p 'attached)  ;; 存储时复制到附件目录
+</code></pre>
+
+            <h3>附件操作</h3>
+            <p>在 Org 标题下，使用 <kbd>C-c C-a</kbd> 打开附件菜单：</p>
+
+            <table>
+                <tr><th>快捷键</th><th>操作</th></tr>
+                <tr><td><kbd>C-c C-a s</kbd></td><td>存储附件（从文件选择器）</td></tr>
+                <tr><td><kbd>C-c C-a c</kbd></td><td>从剪贴板粘贴附件</td></tr>
+                <tr><td><kbd>C-c C-a y</kbd></td><td>拖放附件</td></tr>
+                <tr><td><kbd>C-c C-a o</kbd></td><td>打开附件</td></tr>
+                <tr><td><kbd>C-c C-a f</kbd></td><td>在文件管理器中显示附件目录</td></tr>
+                <tr><td><kbd>C-c C-a d</kbd></td><td>删除附件</td></tr>
+                <tr><td><kbd>C-c C-a l</kbd></td><td>列出所有附件</td></tr>
+            </table>
+
+            <h3>附件示例</h3>
+            <p>附件存储结构如下：</p>
+            <pre><code>;; Org 文件中的标题
+* 项目设计文档
+  :PROPERTIES:
+  :ID:       a1b2c3d4-e5f6-7890-abcd-ef1234567890
+  :END:
+  附件已自动关联到此标题。
+
+;; 物理文件结构
+~/org/attach/
+├── a1/b2c3d4-e5f6-7890-abcd-ef1234567890/
+│   ├── 设计图.png
+│   ├── 需求文档.pdf
+│   └── 原型.sketch
+</code></pre>
+
+            <div class="warning">
+                附件 ID 使用 UUID 生成。确保 <code>org-attach-id-dir</code> 目录在版本控制中被正确处理（可以加入 .gitignore 或使用 Git LFS）。
+            </div>
+
+            <h3>在链接中引用附件</h3>
+            <pre><code>;; 链接到附件
+[[attachment:设计图.png]]
+
+;; 使用 ID 链接
+[[id:a1b2c3d4-e5f6-7890-abcd-ef1234567890][项目设计文档]]
+</code></pre>
+
+            <h2>实用配置示例</h2>
+            <p>以下是一个完整的、适合日常使用的 Capture 配置：</p>
+
+            <pre><code>;;; ========================
+;;; Capture 完整配置
+;;; ========================
+
+;; 默认笔记文件
+(setq org-default-notes-file "~/org/inbox.org")
+
+;; Capture 模板
+(setq org-capture-templates
+      '(("i" "收件箱" entry (file "~/org/inbox.org")
+         "* %?\n  %U\n  %a")
+
+        ("t" "任务")
+        ("tt" "待办任务" entry (file+headline "~/org/todo.org" "收集箱")
+         "* TODO %?\n  %U\n  %a")
+        ("tp" "项目任务" entry (file+headline "~/org/projects.org" "任务")
+         "* TODO %^{描述}\n  :PROPERTIES:\n  :项目: %^{项目}\n  :END:\n  SCHEDULED: %t\n  %a")
+
+        ("n" "笔记")
+        ("nn" "普通笔记" entry (file+datetree "~/org/notes.org")
+         "* %?\n  %U\n  %i\n  %a")
+        ("nw" "工作笔记" entry (file+headline "~/org/work-notes.org" "工作")
+         "* %?\n  %U\n  :work:")
+
+        ("m" "会议记录" entry (file+datetree "~/org/meetings.org")
+         "* 会议：%?\n  与会者：\n  讨论：\n  行动项：\n  %U")
+
+        ("j" "日记" entry (file+datetree "~/org/diary.org")
+         "* %?\n  %U\n  心情：")
+
+        ("r" "阅读" entry (file+datetree "~/org/reading.org")
+         "* %^{标题}\n  作者：%^{作者}\n  %?\n  %u")))
+
+;; 捕获完成后自动回到原窗口
+(setq org-capture-bookmark nil)
+
+;; 快捷键绑定
+(global-set-key (kbd "C-c c") 'org-capture)
+</code></pre>
+
+            <div class="tip">
+                建议将 Capture 目标文件都集中在 <code>~/org/</code> 目录下，并将这些文件加入 <code>org-agenda-files</code>，这样所有捕获的内容都能在 Agenda 中看到。
+            </div>
+
+            <h2>本课小结</h2>
+            <p>本课你学习了 Org Mode 的捕获系统和附件管理：</p>
+            <ul>
+                <li><kbd>C-c c</kbd> 启动 Capture，快速记录任何想法</li>
+                <li>通过 <code>org-capture-templates</code> 定义自定义模板</li>
+                <li>使用模板扩展（<code>%?</code>、<code>%t</code>、<code>%a</code> 等）自动化内容</li>
+                <li>使用 <code>org-attach</code> 管理文件附件</li>
+                <li>从外部应用（浏览器、命令行）调用 Capture</li>
+            </ul>
+
+            <div class="info">
+                Capture 系统的最佳实践是：设置尽可能少的摩擦。模板越简单，你越容易养成随时记录的习惯。先用简单的模板开始，逐步根据需要添加复杂度。
+            </div>
+
+            <div class="page-nav">
+                <a href="12-agenda.html">← 上一课：日程视图</a>
+                <a href="14-export.html">下一课：导出和发布 →</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Emacs Org Mode 手把手教程</strong></p>
+            <p>基于 <a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">Org Mode 手册中文翻译</a></p>
+            <p style="margin-top: 15px;">
+                <a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a> ·
+                <a href="https://orgmode.org/" target="_blank">Org Mode 官网</a> ·
+                <a href="https://www.gnu.org/software/emacs/" target="_blank">Emacs 官网</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9em;">遵循 GNU 自由文档许可证 (GFDL) 1.3</p>
+        </div>
+    </div>
+</body>
+</html>

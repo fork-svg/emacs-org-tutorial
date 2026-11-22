@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 17 课：与其他工具集成 - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">← 回到首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>🔗 第 17 课：与其他工具集成</h1>
+            <p>Org Mode 的强大之处在于它的可扩展性。本课将介绍如何将 Org Mode 与你常用的工具集成——从 Git 版本控制到日历同步，从邮件管理到移动端访问。</p>
+
+            <h2>Git 版本控制</h2>
+            <p>将 Org 文件纳入 Git 版本控制是最佳实践，可以追踪修改历史、防止数据丢失。</p>
+
+            <h3>基本设置</h3>
+            <pre><code># 在 Org 目录初始化 Git 仓库
+cd ~/org
+git init
+git add .
+git commit -m "初始化 Org 仓库"
+</code></pre>
+
+            <h3>自动提交配置</h3>
+            <pre><code>;; 自动保存并提交 Org 文件
+(defun my/org-auto-commit ()
+  "自动提交 Org 文件修改到 Git"
+  (when (string-match-p "\\.org$" (buffer-file-name))
+    (let ((default-directory (expand-file-name "~/org")))
+      (shell-command "git add *.org")
+      (shell-command (format "git commit -m 'auto: %s'"
+                             (format-time-string "%Y-%m-%d %H:%M"))))))
+
+;; 在保存时自动提交
+(add-hook 'after-save-hook 'my/org-auto-commit)
+
+;; 或者使用 magit 手动管理（推荐）
+;; 安装 magit
+(use-package magit
+  :bind (("C-x g" . magit-status)))
+</code></pre>
+
+            <h3>.gitignore 配置</h3>
+            <pre><code># ~/org/.gitignore
+
+# 自动生成的文件
+*.html
+*.pdf
+*.aux
+*.log
+*.out
+
+# 自动保存文件
+*~
+\#*\#
+.\#*
+
+# 附件目录（如果使用本地附件）
+attach/
+
+# 临时文件
+*.tmp
+*.bak
+
+# 不跟踪敏感文件（如果有的话）
+# secrets.org
+</code></pre>
+
+            <h3>自动同步到远程仓库</h3>
+            <pre><code>;; 使用 cron 或 magit 定时推送
+;; 在 shell 中设置 cron
+;; crontab -e
+;; 0 */2 * * * cd ~/org && git add . && git commit -m "auto sync" && git push
+
+;; 或者在 Emacs 中手动推送
+;; M-x magit-status
+;; 然后按 s (stage) c (commit) p (push)
+</code></pre>
+
+            <div class="tip">
+                推荐将 Org 仓库推送到私有 Git 仓库（GitHub、GitLab 或 Gitea），这样你可以在多台设备间同步，同时保持数据私密性。
+            </div>
+
+            <h2>日历集成</h2>
+            <p>Org Mode 可以与系统日历双向同步。</p>
+
+            <h3>导出为 iCalendar</h3>
+            <pre><code>;; 加载 iCalendar 模块
+(require 'org-icalendar)
+
+;; 配置导出选项
+(setq org-icalendar-combined-agenda-file "~/org/my-calendar.ics")
+(setq org-icalendar-include-todo t)         ;; 包含 TODO
+(setq org-icalendar-use-deadline '(event-if-todo event-if-not-todo))
+(setq org-icalendar-use-scheduled '(event-if-todo event-if-not-todo))
+(setq org-icalendar-timezone "Asia/Shanghai")
+
+;; 导出为 iCal
+;; M-x org-icalendar-export-to-ics
+;; M-x org-icalendar-export-agenda-files（批量导出）
+;; M-x org-icalendar-combine-agenda-files（合并为单文件）
+</code></pre>
+
+            <h3>导入日历事件</h3>
+            <pre><code>;; 导入 iCal 文件到 Org
+;; M-x org-import-calendar
+
+;; 或者使用 org-caldav 实现双向同步（推荐）
+(use-package org-caldav
+  :config
+  (setq org-caldav-url "https://caldav.example.com/calendars/")
+  (setq org-caldav-calendar-id "personal")
+  (setq org-caldav-inbox "~/org/calendar.org")
+  (setq org-caldav-files '("~/org/todo.org"))
+  (setq org-caldav-skip-conditions
+        '(nottimestamp)))
+
+;; 同步命令
+;; M-x org-caldav-sync
+</code></pre>
+
+            <h3>与 Google Calendar 同步</h3>
+            <pre><code>;; 使用 Google Calendar API
+;; 需要先在 Google Cloud Console 创建项目和凭据
+
+(setq org-caldav-url "https://www.google.com/calendar/dav")
+(setq org-caldav-calendar-id "your-email@gmail.com")
+(setq org-caldav-inbox "~/org/gcal.org")
+
+;; 同步 Google Calendar 的事件到 Org
+;; 运行 M-x org-caldav-sync
+</code></pre>
+
+            <div class="info">
+                <code>org-caldav</code> 支持与任何 CalDAV 服务器同步，包括 Nextcloud、Radicale、iCloud 等。这是实现跨设备日历同步最可靠的方式。
+            </div>
+
+            <h2>邮件集成</h2>
+            <p>Org Mode 可以与 Emacs 内置的邮件客户端完美集成。</p>
+
+            <h3>使用 Gnus 邮件</h3>
+            <pre><code>;; 启用 org-gnus
+(require 'org-gnus)
+
+;; 在 Gnus 中使用 org-store-link（C-c l）
+;; 可以创建指向邮件的链接，例如：
+;; [[gnus:nnimap+gmail:INBOX#12345][来自张三的邮件]]
+
+;; 配置邮件链接模板
+(setq org-capture-templates
+      (append org-capture-templates
+              '(("e" "邮件任务" entry (file "~/org/email-tasks.org")
+                 "* TODO 回复：%:from - %:subject\n  %a\n  %?"))))
+</code></pre>
+
+            <h3>使用 Mu4e 邮件</h3>
+            <pre><code>;; 启用 org-mu4e
+(require 'org-mu4e)
+
+;; 在 Mu4e 中存储链接
+;; 在邮件上按 C-c l 存储链接
+;; 然后可以在 Capture 中使用 %a 插入邮件链接
+
+;; Mu4e 搜索查询链接
+;; [[mu4e:subject:"project update"][项目更新邮件]]
+;; [[mu4e:date:2026-11-20..2026-11-22][最近三天的邮件]]
+;; [[mu4e:flag:unread][未读邮件]]
+</code></pre>
+
+            <h2>浏览器链接</h2>
+            <p>通过 <code>org-protocol</code> 可以从浏览器快速捕获网页内容。</p>
+
+            <h3>配置 org-protocol</h3>
+            <pre><code>;; 启用 org-protocol
+(require 'org-protocol)
+
+;; 确保 emacsclient 在运行
+(server-start)
+
+;; 配置 URL handler（需要在操作系统层面注册）
+;; Linux: 创建 ~/.local/share/applications/org-protocol.desktop
+;; [Desktop Entry]
+;; Name=Org Protocol
+;; Exec=emacsclient %u
+;; Type=Application
+;; Terminal=false
+;; MimeType=x-scheme-handler/org-protocol
+
+;; macOS: 使用 Platypus 或 Swift 创建 app
+;; Windows: 注册表设置 URL handler
+</code></pre>
+
+            <h3>浏览器书签栏捕获</h3>
+            <pre><code>;; 在浏览器中添加书签栏按钮：
+;; 名称：Org Capture
+;; URL：javascript:location.href='org-protocol://capture?template=w&url='+
+;;       encodeURIComponent(location.href)+'&title='+
+;;       encodeURIComponent(document.title)+'&body='+
+;;       encodeURIComponent(window.getSelection())
+
+;; 对应的 Capture 模板
+(setq org-capture-templates
+      (append org-capture-templates
+              '(("w" "网页摘录" entry (file+datetree "~/org/web-clips.org")
+                 "* %:title\n  :PROPERTIES:\n  :URL: %:link\n  :END:\n  %:initial\n  %?\n  %U"))))
+
+;; 也可以直接从浏览器创建 TODO
+;; javascript:location.href='org-protocol://capture?template=t&url='+
+;;   encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)
+</code></pre>
+
+            <div class="tip">
+                浏览器捕获是建立"稍后阅读"系统的绝佳方式。看到感兴趣的文章，点击书签栏按钮，内容就会自动保存到 Org 文件中，附带原文标题和链接。
+            </div>
+
+            <h3>org-protocol 高级用法</h3>
+            <pre><code>;; 源引用（引用代码片段）
+(setq org-capture-templates
+      (append org-capture-templates
+              '(("s" "源代码引用" entry (file+datetree "~/org/code-snippets.org")
+                 "* %:title\n  :PROPERTIES:\n  :URL: %:link\n  :END:\n  #+BEGIN_SRC %:initial\n  %?\n  #+END_SRC\n  %U"))))
+
+;; 使用 org-protocol 存储链接
+;; 在浏览器中：
+;; javascript:location.href='org-protocol://store-link?url='+
+;;   encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)
+</code></pre>
+
+            <h2>移动端同步</h2>
+            <p>在手机上查看和编辑 Org 文件的方案。</p>
+
+            <h3>方案一：Git 同步 + 移动端 App</h3>
+            <pre><code>;; 在手机上使用以下 App：
+;;
+;; iOS:
+;; - beorg (https://beorgapp.com) - 原生 Org Mode 客户端
+;; - organice (https://organice.200ok.ch) - Web 版 Org 客户端
+;;
+;; Android:
+;; - Orgzly (https://orgzly.com) - 强大的 Android Org 客户端
+;; - organice - Web 版
+;;
+;; 配置 Git 同步（以 organice 为例）
+;; organice 支持直接连接 GitHub/GitLab/Dropbox
+;; 不需要本地 Git 仓库
+</code></pre>
+
+            <h3>方案二：WebDAV / Syncthing 同步</h3>
+            <pre><code>;; Syncthing 自动同步方案
+;; 1. 在电脑和手机上都安装 Syncthing
+;; 2. 创建 Org 文件夹的共享
+;; 3. 设置为双向同步
+;; 4. 手机上使用 Orgzly 打开同步目录
+
+;; WebDAV 方案
+;; 在服务器上搭建 WebDAV
+;; 使用 Cadaver 或 rclone 同步
+;; rclone sync ~/org remote:org/
+</code></pre>
+
+            <h3>方案三：Termux + Emacs（Android 高级方案）</h3>
+            <pre><code>;; Android 上运行完整的 Emacs + Org Mode
+;;
+;; 1. 安装 Termux（从 F-Droid）
+;; 2. pkg install emacs git
+;; 3. git clone your-org-repo
+;; 4. emacs ~/org/todo.org
+;;
+;; 优势：完整的 Emacs 体验
+;; 劣势：需要命令行操作经验
+
+;; 在 Termux 中的 Git 自动同步
+;; ~/.bashrc 中添加
+cd ~/org && git pull --rebase 2>/dev/null
+
+;; 退出时自动提交
+trap 'cd ~/org && git add . && git commit -m "mobile sync" && git push' EXIT
+</code></pre>
+
+            <h2>其他集成方案</h2>
+
+            <h3>与文件系统工具集成</h3>
+            <pre><code>;; 使用 fd 快速搜索 Org 文件
+;; 安装 fd-find（apt install fd-find 或 brew install fd）
+;; fd -e org "关键词" ~/org/
+
+;; 使用 ripgrep 搜索 Org 文件内容
+;; rg "TODO" ~/org/
+;; rg --type org "关键词"
+
+;; 在 Emacs 中使用 projectile 管理多个 Org 项目
+(use-package projectile
+  :config
+  (projectile-mode +1))
+
+;; 使用 counsel-projectile 或 helm-projectile 快速切换
+(use-package counsel-projectile
+  :after counsel
+  :config
+  (counsel-projectile-mode))
+</code></pre>
+
+            <h3>与通知系统集成</h3>
+            <pre><code>;; 使用 org-alert 提醒截止日期
+(use-package org-alert
+  :config
+  (setq org-alert-interval 300)         ;; 检查间隔（秒）
+  (setq org-alert-notify-cutoff 30)     ;; 提前通知时间（分钟）
+  (setq org-alert-notify-after-event-cutoff 10)
+  (org-alert-enable))
+
+;; 使用 appt（Emacs 内置提醒）
+(require 'appt)
+(setq appt-time-msg-list nil)
+(setq appt-display-format 'window)
+(org-agenda-to-appt)  ;; 将 Agenda 事件添加到提醒
+(run-at-time "24:00" (* 24 3600) 'org-agenda-to-appt)  ;; 每天更新
+</code></pre>
+
+            <h3>与任务管理工具集成</h3>
+            <pre><code>;; 导出为 TaskWarrior 格式
+;; M-x org-taskjuggler-export
+
+;; 与 Jira 集成（使用 org-jira）
+(use-package org-jira
+  :config
+  (setq jiralib-url "https://your-company.atlassian.net")
+  (setq jiralib-user "your-email"))
+
+;; 与 Trello 集成（使用 org-trello）
+(use-package org-trello
+  :config
+  (setq org-trello-files '("~/org/trello-sync.org")))
+</code></pre>
+
+            <h3>与 Pomodoro 技术集成</h3>
+            <pre><code>;; 使用 org-pomodoro 番茄钟
+(use-package org-pomodoro
+  :after org-agenda
+  :config
+  (setq org-pomodoro-length 25)         ;; 工作时长 25 分钟
+  (setq org-pomodoro-short-break-length 5)   ;; 短休息 5 分钟
+  (setq org-pomodoro-long-break-length 15)   ;; 长休息 15 分钟
+  (setq org-pomodoro-audio-player "aplay")   ;; 提示音播放器
+  :bind
+  (:map org-agenda-mode-map
+        (("K" . org-pomodoro))))
+
+;; 在 Agenda 中按 K 启动番茄钟
+;; 番茄钟结束时会在 Org 文件中记录时间
+</code></pre>
+
+            <h2>自动化脚本</h2>
+            <pre><code>#!/bin/bash
+# ~/org/sync.sh - 自动同步脚本
+
+ORG_DIR="$HOME/org"
+REMOTE="origin"
+BRANCH="main"
+
+cd "$ORG_DIR" || exit 1
+
+# 拉取远程变更
+git pull --rebase "$REMOTE" "$BRANCH"
+
+# 添加所有变更
+git add -A
+
+# 提交变更（如果有）
+if ! git diff --cached --quiet; then
+    git commit -m "auto sync: $(date '+%Y-%m-%d %H:%M:%S')"
+    git push "$REMOTE" "$BRANCH"
+    echo "✓ 同步完成"
+else
+    echo "— 没有变更"
+fi
+</code></pre>
+
+            <div class="warning">
+                自动同步脚本可能在多设备同时编辑时产生冲突。建议：1）使用 Git 的自动合并功能 2）冲突时手动解决 3）定期备份 Org 目录 4）考虑使用 Syncthing 代替 Git（Syncthing 的版本控制功能对 Org 文件更友好）。
+            </div>
+
+            <h2>完整集成配置示例</h2>
+            <pre><code>;;; ========================
+;;; 工具集成完整配置
+;;; ========================
+
+;;; --- Git ---
+(use-package magit
+  :bind (("C-x g" . magit-status)))
+
+;;; --- 日历 ---
+(require 'org-icalendar)
+(setq org-icalendar-combined-agenda-file "~/org/calendar.ics")
+(setq org-icalendar-timezone "Asia/Shanghai")
+
+;;; --- 提醒 ---
+(use-package org-alert
+  :config
+  (org-alert-enable))
+
+;;; --- 番茄钟 ---
+(use-package org-pomodoro
+  :after org-agenda
+  :bind (:map org-agenda-mode-map ("K" . org-pomodoro)))
+
+;;; --- org-protocol ---
+(require 'org-protocol)
+
+;;; --- 网页剪藏 ---
+(setq org-capture-templates
+      (append org-capture-templates
+              '(("w" "网页剪藏" entry (file+datetree "~/org/web-clips.org")
+                 "* %:title\n  :PROPERTIES:\n  :URL: %:link\n  :END:\n  %?\n  %U"))))
+
+;;; --- 全局快捷键 ---
+(global-set-key (kbd "C-c l") 'org-store-link)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "C-c a") 'org-agenda)
+</code></pre>
+
+            <h2>本课小结</h2>
+            <p>本课你学习了 Org Mode 与各种工具的集成方案：</p>
+            <ul>
+                <li>Git 版本控制保护你的数据安全</li>
+                <li>日历集成实现跨设备同步</li>
+                <li>邮件集成建立通信追踪</li>
+                <li>浏览器链接实现快速剪藏</li>
+                <li>移动端方案让你随时随地访问</li>
+                <li>通知系统和番茄钟提升专注力</li>
+            </ul>
+
+            <div class="info">
+                集成不是一次性完成的。先从最必要的集成开始（如 Git 版本控制和日历同步），然后根据需要逐步添加其他集成。每添加一个集成，花一周时间充分使用它，确保它确实提升了你的效率。
+            </div>
+
+            <div class="page-nav">
+                <a href="16-workflows.html">← 上一课：自定义工作流</a>
+                <a href="18-performance.html">下一课：性能优化 →</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Emacs Org Mode 手把手教程</strong></p>
+            <p>基于 <a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">Org Mode 手册中文翻译</a></p>
+            <p style="margin-top: 15px;">
+                <a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a> ·
+                <a href="https://orgmode.org/" target="_blank">Org Mode 官网</a> ·
+                <a href="https://www.gnu.org/software/emacs/" target="_blank">Emacs 官网</a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9em;">遵循 GNU 自由文档许可证 (GFDL) 1.3</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第 3 课：配置文件入门 - Emacs Org Mode 教程</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <nav class="breadcrumb">
+    <a href="../index.html">首页</a> &gt;
+    <span>第 3 课：配置文件入门</span>
+  </nav>
+
+  <header>
+    <h1>第 3 课：配置文件入门</h1>
+    <p class="subtitle">学习 Emacs 配置文件结构，启用 Org Mode，构建推荐初始配置</p>
+  </header>
+
+  <main>
+    <section id="introduction">
+      <h2>课程简介</h2>
+      <p>Emacs 的强大之处还在于其高度可定制性。通过配置文件，你可以让 Emacs 按照你的习惯工作。本课将介绍 Emacs 配置文件的基本结构和常用配置选项。</p>
+      <div class="info">
+        <strong>学习目标：</strong>理解 Emacs 配置文件的位置和语法，掌握基本配置方法，启用 Org Mode，并创建一个适合 Org Mode 的初始配置。
+      </div>
+    </section>
+
+    <section id="config-file-location">
+      <h2>配置文件位置</h2>
+      <p>Emacs 支持多个配置文件位置，推荐使用的是 <code>~/.emacs.d/init.el</code>：</p>
+      <table>
+        <thead>
+          <tr>
+            <th>文件路径</th>
+            <th>说明</th>
+            <th>推荐程度</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>~/.emacs.d/init.el</code></td>
+            <td>现代推荐方式，便于管理</td>
+            <td>⭐⭐⭐ 推荐</td>
+          </tr>
+          <tr>
+            <td><code>~/.emacs</code></td>
+            <td>传统方式，简单直接</td>
+            <td>⭐⭐ 可用</td>
+          </tr>
+          <tr>
+            <td><code>~/.emacs.d/init.el</code> (XDG)</td>
+            <td>XDG 标准，适合整理</td>
+            <td>⭐⭐ 可选</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="tip">
+        <strong>推荐做法：</strong>使用 <code>~/.emacs.d/init.el</code>，因为 <code>.emacs.d</code> 目录可以存放额外的配置模块、包管理等文件，更易于组织和维护。
+      </div>
+    </section>
+
+    <section id="basic-syntax">
+      <h2>Lisp 基础语法</h2>
+      <p>Emacs 使用 Emacs Lisp（elisp）作为配置语言。了解一些基础语法有助于理解配置：</p>
+      <h3>注释</h3>
+      <pre><code>;; 这是单行注释
+;; 通常使用两个分号表示行首注释
+
+;; 多行注释使用 #| 和 |#
+#| 这是
+   多行注释 |#</code></pre>
+      <h3>设置变量</h3>
+      <pre><code>;; 设置变量值
+(setq variable-name value)
+
+;; 示例
+(setq inhibit-startup-screen t)     ; 禁用启动界面
+(setq make-backup-files nil)        ; 禁用备份文件
+(setq auto-save-default t)          ; 启用自动保存</code></pre>
+      <h3>条件判断</h3>
+      <pre><code>;; if 语句
+(if condition
+    true-expression
+  false-expression)
+
+;; when 语句（只有 true 部分）
+(when condition
+  expression1
+  expression2)</code></pre>
+      <h3>函数调用</h3>
+      <pre><code>;; Lisp 函数调用格式：(函数名 参数1 参数2 ...)
+(add-hook 'org-mode-hook 'visual-line-mode)
+(global-set-key (kbd "C-c c") 'org-capture)</code></pre>
+      <div class="info">
+        <strong>学习建议：</strong>你不需要完全掌握 Lisp 语法。大多数时候只需要复制粘贴配置，理解每个配置项的作用即可。
+      </div>
+    </section>
+
+    <section id="enable-org-mode">
+      <h2>启用 Org Mode</h2>
+      <p>Org Mode 是 Emacs 的内置模式，默认已经安装。你只需要确保它正确启用：</p>
+      <h3>基本启用</h3>
+      <pre><code>;; 确保 .org 文件使用 Org Mode
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))</code></pre>
+      <h3>启用 Org Mode 的常用功能</h3>
+      <pre><code>;; 启用 Org 的日程提醒
+(add-hook 'org-mode-hook 'turn-on-org-indent)
+
+;; 启用 Org 的自动换行
+(add-hook 'org-mode-hook 'visual-line-mode)
+
+;; 启用 Org 的表格对齐
+(add-hook 'org-mode-hook 'org-indent-mode)</code></pre>
+      <div class="warning">
+        <strong>注意：</strong>Org Mode 已内置于 Emacs 22+ 版本，无需单独安装。如果你使用的是较新版本的 Emacs，Org Mode 应该已经可用。
+      </div>
+    </section>
+
+    <section id="basic-config">
+      <h2>基本配置选项</h2>
+      <h3>界面优化</h3>
+      <pre><code>;; 禁用启动界面
+(setq inhibit-startup-screen t)
+
+;; 禁用菜单栏（可选，看个人喜好）
+(menu-bar-mode -1)
+
+;; 显示行号
+(global-display-line-numbers-mode 1)
+
+;; 启用语法高亮
+(global-font-lock-mode 1)
+
+;; 显示括号匹配
+(show-paren-mode 1)
+
+;; 禁用工具栏（可选）
+(tool-bar-mode -1)
+
+;; 禁用滚动条（可选）
+(scroll-bar-mode -1)</code></pre>
+      <h3>编辑行为优化</h3>
+      <pre><code>;; 启用自动缩进
+(electric-indent-mode 1)
+
+;; Tab 使用空格
+(setq-default indent-tabs-mode nil)
+
+;; 缩进宽度为 2 个空格
+(setq-default tab-width 2)
+
+;; 自动保存
+(auto-save-mode 1)
+
+;; 自动备份
+(setq make-backup-files t)
+
+;; 备份文件保存位置
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+
+;; 自动保存文件位置
+(setq auto-save-file-name-transforms
+      '((".*" "~/.emacs.d/auto-save/" t)))</code></pre>
+      <h3>UTF-8 编码支持</h3>
+      <pre><code>;; 设置默认编码为 UTF-8
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)</code></pre>
+    </section>
+
+    <section id="package-manager">
+      <h2>包管理器配置</h2>
+      <p>Emacs 内置了包管理器，可以方便地安装和管理扩展。以下是基本配置：</p>
+      <pre><code>;; 启用包管理器
+(require 'package)
+
+;; 添加 MELPA 源（Emacs 最大的第三方包仓库）
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+
+;; 添加 MELPA Stable 源（稳定版本）
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
+;; 初始化包管理器
+(package-initialize)
+
+;; 刷新包列表（首次使用时需要执行）
+;; 可以按 M-x package-refresh-contents 手动刷新</code></pre>
+      <h3>安装包的命令</h3>
+      <pre><code>;; 交互式安装包
+;; 按 M-x package-install RET 包名 RET
+
+;; 在配置中自动安装包
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+;; 使用 use-package 管理包（推荐）
+(require 'use-package)
+(setq use-package-always-ensure t)</code></pre>
+      <div class="tip">
+        <strong>推荐：</strong>使用 <code>use-package</code> 可以让配置更整洁、更易管理。它会自动处理包的下载和加载。
+      </div>
+    </section>
+
+    <section id="recommended-config">
+      <h2>推荐初始配置</h2>
+      <p>以下是一个适合 Org Mode 初学者的完整配置文件模板。将以下内容复制到 <code>~/.emacs.d/init.el</code>：</p>
+      <pre><code>;;; ~/.emacs.d/init.el --- Emacs 配置文件 -*- lexical-binding: t; -*-
+
+;;; 评论: 这是一个为 Org Mode 优化的初始配置
+
+;; ====================
+;; 基础设置
+;; ====================
+
+;; 禁用启动界面
+(setq inhibit-startup-screen t)
+
+;; 禁用欢迎界面
+(setq inhibit-splash-screen t)
+
+;; 禁用备份文件（避免产生 ~ 文件）
+(setq make-backup-files nil)
+
+;; 禁用自动保存
+(setq auto-save-default nil)
+
+;; 设置默认编码
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+
+;; 显示行号
+(global-display-line-numbers-mode 1)
+
+;; 显示括号匹配
+(show-paren-mode 1)
+
+;; 设置 Tab 宽度
+(setq-default tab-width 4)
+(setq-default indent-tabs-mode nil)
+
+;; ====================
+;; 包管理器
+;; ====================
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+;; 确保 use-package 已安装
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;; ====================
+;; Org Mode 配置
+;; ====================
+
+;; 确保 .org 文件使用 Org Mode
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
+;; Org Mode 基本设置
+(setq org-startup-indented t)        ; 启用视觉缩进
+(setq org-startup-folded t)          ; 启动时折叠标题
+(setq org-log-done t)                ; 完成任务时记录时间戳
+(setq org-completion-use-ido t)      ; 使用 ido 补全
+
+;; Org 快捷键
+(global-set-key (kbd "C-c l") #'org-store-link)
+(global-set-key (kbd "C-c c") #'org-capture)
+(global-set-key (kbd "C-c a") #'org-agenda)
+
+;; Org 自动换行
+(add-hook 'org-mode-hook #'visual-line-mode)
+
+;; Org 目录设置（后续会用到）
+(setq org-directory "~/org")
+
+;; ====================
+;; 其他有用的设置
+;; ====================
+
+;; 启用 windmove（用 Shift+方向键切换窗口）
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+
+;; 启用全局自动换行
+(global-visual-line-mode 1)
+
+;;; init.el 结束</code></pre>
+      <div class="info">
+        <strong>说明：</strong>这个配置已经为 Org Mode 做好了基本准备。后续课程会逐步添加更多 Org Mode 特定的配置。
+      </div>
+    </section>
+
+    <section id="apply-config">
+      <h2>应用配置</h2>
+      <p>创建或修改配置文件后，有几种方式让配置生效：</p>
+      <h3>方法一：重启 Emacs</h3>
+      <p>最简单的方法是重启 Emacs。退出后重新打开即可。</p>
+      <h3>方法二：重新加载配置（不重启）</h3>
+      <p>在 Emacs 中按 <kbd>M-:</kbd>（执行 Lisp 表达式），输入：</p>
+      <pre><code>(load-file "~/.emacs.d/init.el")</code></pre>
+      <p>或者使用 <kbd>M-x eval-buffer</kbd>（如果当前正在编辑配置文件）。</p>
+      <h3>方法三：选择性执行</h3>
+      <p>如果只想执行部分配置，可以选中代码后按 <kbd>M-x eval-region</kbd>。</p>
+      <div class="warning">
+        <strong>注意：</strong>某些配置项（如包管理器的初始化）可能需要重启才能完全生效。如果遇到问题，可以尝试重启 Emacs。
+      </div>
+    </section>
+
+    <section id="verify-config">
+      <h2>验证配置</h2>
+      <p>配置完成后，进行以下检查：</p>
+      <ol>
+        <li>重启 Emacs，确认没有报错</li>
+        <li>按 <kbd>C-x C-f</kbd> 打开一个 <code>.org</code> 文件</li>
+        <li>确认进入 Org Mode（模式行显示 "Org"）</li>
+        <li>按 <kbd>M-x describe-mode</kbd> 查看当前模式信息</li>
+      </ol>
+      <pre><code>;; 如果遇到问题，可以查看 Emacs 消息日志
+;; 按 C-x C 打开 *Messages* 缓冲区查看错误信息</code></pre>
+    </section>
+
+    <section id="summary">
+      <h2>课程小结</h2>
+      <p>本课介绍了 Emacs 配置文件的基本结构和 Org Mode 的启用方法。你已经学会了：</p>
+      <ul>
+        <li>配置文件的位置（<code>~/.emacs.d/init.el</code>）</li>
+        <li>基本的 Lisp 语法</li>
+        <li>界面和编辑行为的配置</li>
+        <li>包管理器的使用</li>
+        <li>一个适合 Org Mode 的推荐配置</li>
+      </ul>
+      <div class="tip">
+        <strong>下一步：</strong>在下一课中，你将正式进入 Org Mode 的世界，学习 Org Mode 的核心概念和快速开始指南。
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <nav class="page-nav">
+      <a href="02-basic-operations.html" class="prev-page">← 上一课：基本操作</a>
+      <a href="04-quick-start.html" class="next-page">下一课：Org Mode 快速开始 →</a>
+    </nav>
+  </footer>
+</body>
+</html>

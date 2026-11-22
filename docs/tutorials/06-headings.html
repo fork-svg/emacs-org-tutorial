@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第 6 课：标题和层级结构 - Emacs Org Mode 教程</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <nav class="breadcrumb">
+    <a href="../index.html">首页</a> &gt;
+    <span>第 6 课：标题和层级结构</span>
+  </nav>
+
+  <header>
+    <h1>第 6 课：标题和层级结构</h1>
+    <p class="subtitle">掌握 Org Mode 大纲的核心功能：折叠、移动、调整层级</p>
+  </header>
+
+  <main>
+    <section id="introduction">
+      <h2>课程简介</h2>
+      <p>Org Mode 的大纲功能是其核心特性之一。通过标题的层级结构，你可以组织复杂的信息，并通过折叠/展开来管理可见性。本课将深入讲解标题和层级结构的各种操作。</p>
+      <div class="info">
+        <strong>学习目标：</strong>掌握标题的创建、折叠展开、移动、层级调整等核心操作，能够高效地组织和管理大纲结构。
+      </div>
+    </section>
+
+    <section id="heading-levels">
+      <h2>星号层级</h2>
+      <p>Org Mode 使用星号（<code>*</code>）的数量来表示标题的层级。这是 Org Mode 最基本的结构元素。</p>
+      <h3>基本语法</h3>
+      <pre><code>* 一级标题（顶级标题）
+** 二级标题
+*** 三级标题
+**** 四级标题
+***** 五级标题（最多支持 8 级）</code></pre>
+      <h3>实际示例</h3>
+      <pre><code>* 项目概述
+** 背景介绍
+*** 行业现状
+*** 问题分析
+** 项目目标
+*** 短期目标
+*** 长期目标
+** 实施计划
+*** 第一阶段
+**** 需求分析
+**** 系统设计
+*** 第二阶段
+**** 开发实现
+**** 测试部署</code></pre>
+      <h3>层级规则</h3>
+      <ul>
+        <li>星号必须在行首</li>
+        <li>星号后必须有一个空格</li>
+        <li>子标题的星号数量必须比父标题多</li>
+        <li>可以跳过层级（如从一级直接到三级），但不推荐</li>
+        <li>建议最多使用 4-5 级，过深的层级会影响可读性</li>
+      </ul>
+      <div class="tip">
+        <strong>视觉提示：</strong>Org Mode 会为不同层级的标题使用不同的颜色和字体大小，帮助你直观地区分层级。
+      </div>
+    </section>
+
+    <section id="visibility-cycling">
+      <h2>折叠和展开</h2>
+      <p>折叠和展开是 Org Mode 大纲的核心操作。通过控制可见性，你可以专注于当前关注的内容。</p>
+      <h3>基本操作</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>快捷键</th>
+            <th>功能</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd>TAB</kbd></td>
+            <td>切换当前标题的可见性</td>
+            <td>在标题上按 TAB</td>
+          </tr>
+          <tr>
+            <td><kbd>S-TAB</kbd></td>
+            <td>全局切换可见性</td>
+            <td>Shift + TAB</td>
+          </tr>
+          <tr>
+            <td><kbd>C-c C-r</kbd></td>
+            <td>显示当前标题的内容</td>
+            <td>reveal 命令</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>TAB 循环状态</h3>
+      <p>在标题上按 <kbd>TAB</kbd> 会在以下状态之间循环：</p>
+      <ol>
+        <li><strong>折叠（Folded）</strong>：只显示标题行，隐藏所有子标题和内容</li>
+        <li><strong>子标题（Children）</strong>：显示直接子标题，但子标题本身是折叠的</li>
+        <li><strong>展开（Subtree）</strong>：显示标题下的所有内容</li>
+      </ol>
+      <h3>S-TAB 全局状态</h3>
+      <p>按 <kbd>S-TAB</kbd>（Shift + TAB）会在以下全局状态之间循环：</p>
+      <ol>
+        <li><strong>全局折叠（Overview）</strong>：只显示一级标题</li>
+        <li><strong>子标题（Contents）</strong>：显示所有标题，但内容是折叠的</li>
+        <li><strong>全局展开（Show All）</strong>：显示所有内容</li>
+      </ol>
+      <h3>实战示例</h3>
+      <pre><code>* 一级标题 A
+** 二级标题 A1
+*** 三级标题 A1a
+    这是 A1a 的内容。
+** 二级标题 A2
+* 一级标题 B
+** 二级标题 B1
+* 一级标题 C</code></pre>
+      <p>操作练习：</p>
+      <ul>
+        <li>将光标放在 "* 一级标题 A"，按 <kbd>TAB</kbd> 三次，观察变化</li>
+        <li>按 <kbd>S-TAB</kbd> 三次，观察全局变化</li>
+        <li>将光标放在 "*** 三级标题 A1a"，按 <kbd>C-c C-r</kbd></li>
+      </ul>
+      <div class="warning">
+        <strong>注意：</strong><kbd>TAB</kbd> 在普通文本区域会插入制表符，只有在标题行上才会触发折叠/展开。
+      </div>
+    </section>
+
+    <section id="startup-options">
+      <h2>启动可见性选项</h2>
+      <p>你可以通过配置控制 Org 文件打开时的默认可见性。</p>
+      <h3>文件级设置</h3>
+      <p>在文件头添加 <code>#+STARTUP</code> 选项：</p>
+      <pre><code>#+STARTUP: overview       # 打开时只显示一级标题
+#+STARTUP: content        # 打开时显示所有标题，内容折叠
+#+STARTUP: showall        # 打开时显示所有内容
+#+STARTUP: showeverything # 打开时显示所有内容（包括抽屉）</code></pre>
+      <h3>全局设置</h3>
+      <p>在配置文件中设置：</p>
+      <pre><code>;; 在 ~/.emacs.d/init.el 中
+(setq org-startup-folded 'overview)   ; 默认折叠
+(setq org-startup-folded 'content)    ; 显示内容
+(setq org-startup-folded nil)         ; 默认展开</code></pre>
+      <h3>局部设置</h3>
+      <p>使用 <code>PROPERTIES</code> 抽屉为特定标题设置：</p>
+      <pre><code>* 项目计划
+  :PROPERTIES:
+  :VISIBILITY: content
+  :END:</code></pre>
+    </section>
+
+    <section id="moving-headings">
+      <h2>移动标题</h2>
+      <p>Org Mode 提供了强大的标题移动功能，让你可以轻松重新组织大纲结构。</p>
+      <h3>上下移动标题</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>快捷键</th>
+            <th>功能</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd>M-↑</kbd></td>
+            <td>向上移动当前标题（包括子标题）</td>
+          </tr>
+          <tr>
+            <td><kbd>M-↓</kbd></td>
+            <td>向下移动当前标题（包括子标题）</td>
+          </tr>
+          <tr>
+            <td><kbd>M-S-↑</kbd></td>
+            <td>向上移动当前标题（只移动标题行）</td>
+          </tr>
+          <tr>
+            <td><kbd>M-S-↓</kbd></td>
+            <td>向下移动当前标题（只移动标题行）</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>移动到其他位置</h3>
+      <pre><code>C-c C-w    # 剪切当前标题（包括子树）
+C-c M-w    # 复制当前标题（包括子树）
+C-y        # 粘贴
+C-c C-x c  # 克隆当前标题（复制并粘贴）</code></pre>
+      <h3>排序标题</h3>
+      <pre><code>C-c ^      # 排序子标题
+# 然后选择排序方式：
+# a - 按字母顺序
+# A - 按字母逆序
+# t - 按时间顺序
+# T - 按时间逆序
+# p - 按优先级
+# o - 按 Org 文件中的顺序</code></pre>
+      <h3>实战示例</h3>
+      <pre><code>* 待办事项
+** TODO 任务 C
+** TODO 任务 A
+** TODO 任务 B
+
+# 将光标放在 "** TODO 任务 A"
+# 按 M-↑ 将其移动到顶部
+# 结果：
+* 待办事项
+** TODO 任务 A
+** TODO 任务 C
+** TODO 任务 B</code></pre>
+      <div class="tip">
+        <strong>提示：</strong>移动标题时，Org Mode 会自动保持层级结构。子标题会跟随父标题一起移动。
+      </div>
+    </section>
+
+    <section id="promote-demote">
+      <h2>提升和降低级别</h2>
+      <p>调整标题的层级是组织大纲的重要操作。</p>
+      <h3>基本操作</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>快捷键</th>
+            <th>功能</th>
+            <th>说明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><kbd>M-←</kbd></td>
+            <td>提升标题级别</td>
+            <td>减少一个星号</td>
+          </tr>
+          <tr>
+            <td><kbd>M-→</kbd></td>
+            <td>降低标题级别</td>
+            <td>增加一个星号</td>
+          </tr>
+          <tr>
+            <td><kbd>M-S-←</kbd></td>
+            <td>提升标题级别（包括子树）</td>
+            <td>整个子树一起提升</td>
+          </tr>
+          <tr>
+            <td><kbd>M-S-→</kbd></td>
+            <td>降低标题级别（包括子树）</td>
+            <td>整个子树一起降低</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>实战示例</h3>
+      <pre><code>* 一级标题
+*** 三级标题
+** 二级标题
+
+# 将光标放在 "*** 三级标题"
+# 按 M-← 提升一级
+# 结果：
+* 一级标题
+** 三级标题
+** 二级标题</code></pre>
+      <h3>调整整个子树</h3>
+      <pre><code>* 项目
+** 阶段一
+*** 任务 A
+*** 任务 B
+** 阶段二
+
+# 将光标放在 "** 阶段一"
+# 按 M-S-→ 降低整个子树
+# 结果：
+* 项目
+*** 阶段一
+**** 任务 A
+**** 任务 B
+*** 阶段二</code></pre>
+      <div class="warning">
+        <strong>注意：</strong>提升或降低级别时，要确保不会破坏层级结构。例如，一级标题不能提升到零级（没有星号）。</div>
+    </section>
+
+    <section id="narrowing">
+      <h2>窄化显示</h2>
+      <p>窄化（Narrowing）是 Emacs 的一个强大功能，可以让你只显示文档的一部分。</p>
+      <h3>基本操作</h3>
+      <pre><code>C-x n s    # 窄化到当前标题的子树
+C-x n w    # 取消窄化（显示全部内容）
+C-x n d    # 窄化到当前区域
+C-x n p    # 窄化到当前页面</code></pre>
+      <h3>使用场景</h3>
+      <ul>
+        <li>编辑大型文档时，专注于当前部分</li>
+        <li>避免被其他内容干扰</li>
+        <li>提高性能（处理非常大的文件时）</li>
+      </ul>
+      <div class="tip">
+        <strong>提示：</strong>窄化后，Emacs 会在模式行显示 "Narrow" 字样。按 <kbd>C-x n w</kbd> 可以随时取消窄化。
+      </div>
+    </section>
+
+    <section id="sparse-trees">
+      <h2>稀疏树</h2>
+      <p>稀疏树功能可以只显示匹配的标题及其父标题，隐藏其他内容。</p>
+      <h3>搜索命令</h3>
+      <pre><code>C-c \      # 创建稀疏树（按关键词搜索）
+C-c /      # 其他稀疏树命令前缀
+C-c / t    # 按 TODO 状态搜索
+C-c / m    # 按标签搜索
+C-c / d    # 按日期搜索
+C-c / r    # 按属性搜索</code></pre>
+      <h3>实战示例</h3>
+      <pre><code>* 项目计划
+** TODO 需求分析 :work:
+** DONE 系统设计 :work:
+** 技术调研 :research:
+*** TODO 评估框架 A
+*** TODO 评估框架 B
+** 开发实现 :work:
+
+# 按 C-c / t，输入 TODO
+# 只显示带有 TODO 状态的标题及其父标题
+
+# 按 C-c / m，输入 work
+# 只显示带有 work 标签的标题</code></pre>
+      <div class="info">
+        <strong>提示：</strong>稀疏树是非常强大的过滤工具。你可以快速找到所有 TODO 项目、特定标签的内容、或符合特定条件的标题。
+      </div>
+    </section>
+
+    <section id="refiling">
+      <h2>重新归档标题</h2>
+      <p>Refiling 是将标题移动到文件中其他位置或其他文件的功能。</p>
+      <h3>基本操作</h3>
+      <pre><code>C-c C-w    # 将当前标题移动到指定位置
+# 然后选择目标位置（可以使用自动补全）
+
+C-u C-c C-w  # 移动到当前文件中的位置
+C-u C-u C-c C-w  # 移动到最近使用的位置</code></pre>
+      <h3>配置 Refile 目标</h3>
+      <pre><code>;; 在 ~/.emacs.d/init.el 中
+(setq org-refile-targets
+      '((nil :maxlevel . 3)           ; 当前文件，最多 3 级
+        (org-agenda-files :maxlevel . 3)))  ; 日程文件，最多 3 级</code></pre>
+      <h3>使用场景</h3>
+      <ul>
+        <li>将任务从"收件箱"移动到具体的项目文件</li>
+        <li>重新组织文档结构</li>
+        <li>将完成的任务移动到"已完成"部分</li>
+      </ul>
+    </section>
+
+    <section id="practical-tips">
+      <h2>实用技巧</h2>
+      <h3>快速创建标题</h3>
+      <pre><code>M-RET      # 在当前标题后创建同级标题
+M-S-RET    # 创建同级标题并添加 TODO 状态
+C-S-RET    # 创建子标题</code></pre>
+      <h3>批量操作</h3>
+      <pre><code>C-c C-p    # 上一个标题
+C-c C-n    # 下一个标题
+C-c C-f    # 上一个同级标题
+C-c C-b    # 下一个同级标题
+C-c C-u    # 父标题</code></pre>
+      <h3>标记和搜索</h3>
+      <pre><code>C-c C-x m  # 标记当前位置
+C-c C-x j  # 跳转到标记位置
+C-c C-x b  # 跳转到指定标题（使用补全）</code></pre>
+      <div class="tip">
+        <strong>效率提示：</strong>熟练使用这些快捷键可以大大提高编辑效率。建议先掌握最常用的几个，然后逐步扩展。
+      </div>
+    </section>
+
+    <section id="practice">
+      <h2>实战练习</h2>
+      <p>创建一个练习文件，尝试以下操作：</p>
+      <ol>
+        <li>创建一个包含 4 个一级标题的大纲</li>
+        <li>为每个一级标题添加 2-3 个二级标题</li>
+        <li>练习使用 <kbd>TAB</kbd> 和 <kbd>S-TAB</kbd> 折叠/展开</li>
+        <li>使用 <kbd>M-↑</kbd> 和 <kbd>M-↓</kbd> 移动标题</li>
+        <li>使用 <kbd>M-←</kbd> 和 <kbd>M-→</kbd> 调整层级</li>
+        <li>尝试使用 <kbd>C-c C-w</kbd> 重新归档标题</li>
+        <li>使用 <kbd>C-c / t</kbd> 搜索 TODO 项目</li>
+      </ol>
+      <pre><code>* 练习项目 1
+** 子任务 A
+** 子任务 B
+* 练习项目 2
+** 子任务 C
+*** 细节 1
+*** 细节 2
+* 练习项目 3
+* 练习项目 4
+
+# 尝试：
+# 1. 将"练习项目 3"移动到"练习项目 1"之前
+# 2. 将"子任务 C"提升为一级标题
+# 3. 将"细节 1"和"细节 2"降低为二级标题</code></pre>
+    </section>
+
+    <section id="summary">
+      <h2>课程小结</h2>
+      <p>本课深入讲解了 Org Mode 的标题和层级结构功能。你已经掌握了：</p>
+      <ul>
+        <li>星号层级的基本概念和规则</li>
+        <li>折叠和展开的各种操作（<kbd>TAB</kbd>、<kbd>S-TAB</kbd>）</li>
+        <li>启动可见性选项的配置</li>
+        <li>移动标题的方法（上下移动、剪切粘贴）</li>
+        <li>提升和降低标题级别</li>
+        <li>窄化显示和稀疏树功能</li>
+        <li>重新归档标题（Refiling）</li>
+        <li>实用的快捷键和技巧</li>
+      </ul>
+      <div class="tip">
+        <strong>下一步：</strong>现在你已经掌握了 Org Mode 的基础结构和编辑操作。接下来的课程将介绍任务管理、日程安排等更高级的功能。
+      </div>
+      <div class="info">
+        <strong>学习建议：</strong>大纲操作是 Org Mode 的基础。建议多花时间练习这些操作，直到它们成为你的第二本能。这将为你后续学习更复杂的功能打下坚实的基础。
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <nav class="page-nav">
+      <a href="05-first-notes.html" class="prev-page">← 上一课：创建第一个笔记</a>
+      <span class="next-page disabled">下一课（即将推出）</span>
+    </nav>
+  </footer>
+</body>
+</html>

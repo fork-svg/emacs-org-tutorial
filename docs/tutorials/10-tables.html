@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 10 课：表格和电子表格 - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>第 10 课：表格和电子表格</h1>
+
+            <p>Org Mode 内置了一个功能强大的表格编辑器，可以创建纯文本表格，甚至支持类似电子表格的公式计算。无需任何额外插件，你就能在 Org 文件中完成数据整理、简单计算和数据展示。</p>
+
+            <h2>创建表格</h2>
+
+            <p>在 Org 文件中创建表格非常简单。只需要输入一个以 <code>|</code> 开头的行，然后按 <kbd>TAB</kbd>：</p>
+
+            <pre><code>| Name | Age | City |
+|------+-----+------|
+| 张三 |  28 | 北京 |
+| 李四 |  32 | 上海 |</code></pre>
+
+            <ol class="steps">
+                <li>在新行输入 <code>|</code>，然后输入第一个单元格内容</li>
+                <li>输入 <code>|</code> 分隔下一个单元格</li>
+                <li>在一行末尾按 <kbd>RET</kbd> 或 <kbd>TAB</kbd>，Org 会自动格式化表格并创建新行</li>
+            </ol>
+
+            <div class="tip">
+                只要输入第一个 <code>|</code> 后跟内容，再输入第二个 <code>|</code>，然后按 <kbd>TAB</kbd>，Org 就会识别这是一个表格并自动创建表格行。不需要手动对齐竖线，Org 会在你输入时自动格式化。
+            </div>
+
+            <h3>快速创建表格</h3>
+
+            <p>你也可以使用 <kbd>C-c |</kbd>（C-c 加竖线）快速插入一个指定大小的表格：</p>
+
+            <pre><code>按 C-c | 后输入：3x4
+将创建 3 列 4 行的空表格
+
+| | | |
+| | | |
+| | | |
+| | | |</code></pre>
+
+            <h2>表格编辑命令</h2>
+
+            <p>Org 提供了丰富的表格编辑命令。所有命令都在表格内使用。</p>
+
+            <h3>单元格导航</h3>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>TAB</kbd></td>
+                    <td>跳到下一个单元格 / 新建行</td>
+                </tr>
+                <tr>
+                    <td><kbd>S-TAB</kbd></td>
+                    <td>跳到上一个单元格</td>
+                </tr>
+                <tr>
+                    <td><kbd>RET</kbd></td>
+                    <td>跳到下一行同列</td>
+                </tr>
+                <tr>
+                    <td><kbd>S-RET</kbd></td>
+                    <td>跳到上一行同列</td>
+                </tr>
+            </table>
+
+            <h3>行列操作</h3>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-LEFT</kbd></td>
+                    <td>删除当前列</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-RIGHT</kbd></td>
+                    <td>在当前列右侧插入新列</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-UP</kbd></td>
+                    <td>删除当前行</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-DOWN</kbd></td>
+                    <td>在当前行下方插入新行</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-LEFT</kbd></td>
+                    <td>将当前列向左移动</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-RIGHT</kbd></td>
+                    <td>将当前列向右移动</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-UP</kbd></td>
+                    <td>将当前行向上移动</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-DOWN</kbd></td>
+                    <td>将当前行向下移动</td>
+                </tr>
+            </table>
+
+            <div class="info">
+                所有列操作（删除、插入、移动列）要求光标在表格内。如果当前在分隔行（<code>|---+---|</code>）上，列操作可能无法正确识别。请将光标放在数据行上再执行操作。
+            </div>
+
+            <h3>对齐和格式化</h3>
+
+            <p>按 <kbd>C-c C-c</kbd> 可以重新对齐和格式化当前表格。通常不需要手动执行，因为 Org 在你编辑表格时会自动格式化。</p>
+
+            <pre><code>对齐前：
+| Name  | Age |    City |
+| 张三 | 28 |    北京 |
+| 李四四 | 32 |   上海市 |
+
+按 C-c C-c 对齐后：
+| Name   | Age | City   |
+|--------+-----+--------|
+| 张三   |  28 | 北京   |
+| 李四四 |  32 | 上海市 |</code></pre>
+
+            <h2>公式计算</h2>
+
+            <p>Org 表格支持类似 Excel 的公式计算，这是它最强大的特性之一。</p>
+
+            <h3>基本公式</h3>
+
+            <p>在表格下方使用 <code>#+TBLFM:</code> 定义公式：</p>
+
+            <pre><code>| 物品   | 单价 | 数量 | 小计 |
+|--------+------+------+------|
+| 苹果   |   10 |    5 |   50 |
+| 香蕉   |    8 |    3 |   24 |
+| 橙子   |   12 |    4 |   48 |
+|--------+------+------+------|
+| 总计   |      |      |  122 |
+#+TBLFM: $4=$2*$3 :: @5$4=vsum(@2$4..@4$4)</code></pre>
+
+            <p>公式语法说明：</p>
+
+            <ul>
+                <li><code>$2</code> — 第 2 列（当前行）</li>
+                <li><code>$3</code> — 第 3 列（当前行）</li>
+                <li><code>$4=$2*$3</code> — 第 4 列 = 第 2 列 × 第 3 列</li>
+                <li><code>@2$4</code> — 第 2 行第 4 列</li>
+                <li><code>::</code> — 分隔多个公式</li>
+            </ul>
+
+            <h3>单元格引用</h3>
+
+            <table>
+                <tr>
+                    <th>引用</th>
+                    <th>含义</th>
+                </tr>
+                <tr>
+                    <td><code>$1</code>, <code>$2</code></td>
+                    <td>当前行的第 1、2 列</td>
+                </tr>
+                <tr>
+                    <td><code>@2$3</code></td>
+                    <td>第 2 行第 3 列</td>
+                </tr>
+                <tr>
+                    <td><code>@2$1..@2$4</code></td>
+                    <td>第 2 行第 1 列到第 4 列（范围）</td>
+                </tr>
+                <tr>
+                    <td><code>$&gt;</code></td>
+                    <td>最后一列</td>
+                </tr>
+                <tr>
+                    <td><code>$&lt;</code></td>
+                    <td>第一列</td>
+                </tr>
+                <tr>
+                    <td><code>@&gt;</code></td>
+                    <td>最后一行</td>
+                </tr>
+                <tr>
+                    <td><code>@&lt;</code></td>
+                    <td>第一行</td>
+                </tr>
+                <tr>
+                    <td><code>@#</code></td>
+                    <td>当前行号</td>
+                </tr>
+            </table>
+
+            <h3>应用公式</h3>
+
+            <p>定义公式后，使用以下命令应用：</p>
+
+            <ul>
+                <li><kbd>C-c C-c</kbd> — 将光标放在 <code>#+TBLFM:</code> 行上按此键，应用所有公式</li>
+                <li><kbd>C-c *</kbd> — 重新计算当前表格的所有公式</li>
+            </ul>
+
+            <div class="tip">
+                当你修改表格数据后，按 <kbd>C-c *</kbd> 即可重新计算所有公式。Org 会记住之前的公式定义，不需要重新输入。
+            </div>
+
+            <h2>常用函数</h2>
+
+            <p>Org 表格内置了许多常用函数。</p>
+
+            <h3>数学函数</h3>
+
+            <pre><code>| x | x^2 | sqrt(x) |
+|---+-----+---------|
+| 4 |  16 |       2 |
+| 9 |  81 |       3 |
+#+TBLFM: $2=$1*$1 :: $3=sqrt($1)</code></pre>
+
+            <h3>统计函数</h3>
+
+            <pre><code>| 学生   | 数学 | 英语 | 物理 | 总分  | 平均分 |
+|--------+------+------+------+-------+--------|
+| 张三   |   90 |   85 |   88 |   263 |     88 |
+| 李四   |   78 |   92 |   81 |   251 |     84 |
+| 王五   |   95 |   78 |   92 |   265 |     88 |
+|--------+------+------+------+-------+--------|
+| 最高分 |   95 |   92 |   92 |   265 |     88 |
+| 最低分 |   78 |   78 |   81 |   251 |     84 |
+#+TBLFM: $5=vsum($2..$4) :: $6=vmean($2..$4)
+#+TBLFM: @5$2=vmax(@2$2..@4$2)</code></pre>
+
+            <h3>常用函数列表</h3>
+
+            <table>
+                <tr>
+                    <th>函数</th>
+                    <th>功能</th>
+                    <th>示例</th>
+                </tr>
+                <tr>
+                    <td><code>vsum</code></td>
+                    <td>求和</td>
+                    <td><code>vsum(@2$1..@5$1)</code></td>
+                </tr>
+                <tr>
+                    <td><code>vmean</code></td>
+                    <td>平均值</td>
+                    <td><code>vmean($2..$4)</code></td>
+                </tr>
+                <tr>
+                    <td><code>vmax</code></td>
+                    <td>最大值</td>
+                    <td><code>vmax(@2$2..@4$2)</code></td>
+                </tr>
+                <tr>
+                    <td><code>vmin</code></td>
+                    <td>最小值</td>
+                    <td><code>vmin(@2$2..@4$2)</code></td>
+                </tr>
+                <tr>
+                    <td><code>string</code></td>
+                    <td>文本连接</td>
+                    <td><code>string("Total")</code></td>
+                </tr>
+                <tr>
+                    <td><code>sqrt</code></td>
+                    <td>平方根</td>
+                    <td><code>sqrt($1)</code></td>
+                </tr>
+                <tr>
+                    <td><code>abs</code></td>
+                    <td>绝对值</td>
+                    <td><code>abs($1)</code></td>
+                </tr>
+                <tr>
+                    <td><code>if</code></td>
+                    <td>条件判断</td>
+                    <td><code>if($1&gt;60,"及格","不及格")</code></td>
+                </tr>
+            </table>
+
+            <h3>条件公式</h3>
+
+            <pre><code>| 学生 | 成绩 | 等级     |
+|------+------+----------|
+| 张三 |   92 | 优秀     |
+| 李四 |   75 | 良好     |
+| 王五 |   58 | 不及格   |
+| 赵六 |   83 | 良好     |
+#+TBLFM: $3=if($2&gt;=90,string("优秀"),if($2&gt;=80,string("良好"),if($2&gt;=60,string("及格"),string("不及格"))))</code></pre>
+
+            <h2>导出表格</h2>
+
+            <p>Org 表格可以导出为多种格式。</p>
+
+            <h3>导出为 HTML</h3>
+
+            <p>使用 <kbd>C-c C-e h h</kbd> 导出为 HTML 时，表格会自动转换为 HTML <code>&lt;table&gt;</code> 元素。你可以用 <code>#+CAPTION:</code> 添加表格标题：</p>
+
+            <pre><code>#+CAPTION: 2026 年度销售数据
+#+NAME: sales-data
+| 季度 | 销售额 | 增长率 |
+|------+--------+--------|
+| Q1   |  120万 |    15% |
+| Q2   |  135万 |    13% |
+| Q3   |  148万 |    10% |
+| Q4   |  170万 |    15% |</code></pre>
+
+            <h3>导出为 CSV</h3>
+
+            <p>使用 <kbd>C-c C-e c v</kbd> 导出为 CSV 格式，方便用 Excel 等工具打开。</p>
+
+            <div class="info">
+                你也可以选择性地只导出表格的一部分。在 <code>#+BEGIN_EXPORT</code> 和 <code>#+END_EXPORT</code> 之间包裹表格，可以控制导出行为。
+            </div>
+
+            <h3>表格对齐模式</h3>
+
+            <p>可以设置表格的对齐方式：</p>
+
+            <pre><code>#+ATTR_HTML: :align center
+| 居中的表格 |
+|------------|
+| 内容       |</code></pre>
+
+            <h2>实战练习</h2>
+
+            <p>创建一个项目预算表格：</p>
+
+            <pre><code>* 项目预算表
+
+#+CAPTION: 2026 Q4 项目预算
+| 类别       | 预算(万) | 实际(万) | 差异   | 完成率 |
+|------------+----------+----------+--------+--------|
+| 人力成本   |      500 |      480 |     20 |    96% |
+| 设备采购   |      200 |      210 |    -10 |   105% |
+| 外包服务   |      100 |       85 |     15 |    85% |
+| 差旅费用   |       50 |       42 |      8 |    84% |
+| 其他       |       30 |       28 |      2 |    93% |
+|------------+----------+----------+--------+--------|
+| 合计       |      880 |      845 |     35 |    96% |
+#+TBLFM: $4=$2-$3 :: $5=$3/$2 ;%.0f :: @7$2=vsum(@2$2..@6$2) :: @7$3=vsum(@2$3..@6$3) :: @7$4=vsum(@2$4..@6$4)</code></pre>
+
+            <div class="warning">
+                公式中的行号基于表格数据行（不含分隔行）。第一行数据是 <code>@2</code>（分隔行算作 <code>@1</code>）。如果添加了表头行，请注意调整行号。
+            </div>
+
+            <h2>常用命令速查</h2>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>TAB</kbd></td>
+                    <td>下一个单元格 / 新建行</td>
+                </tr>
+                <tr>
+                    <td><kbd>S-TAB</kbd></td>
+                    <td>上一个单元格</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-RIGHT</kbd></td>
+                    <td>插入新列</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-LEFT</kbd></td>
+                    <td>删除当前列</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-DOWN</kbd></td>
+                    <td>插入新行</td>
+                </tr>
+                <tr>
+                    <td><kbd>M-S-UP</kbd></td>
+                    <td>删除当前行</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-c</kbd></td>
+                    <td>格式化表格 / 应用公式</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c *</kbd></td>
+                    <td>重新计算所有公式</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c |</kbd></td>
+                    <td>快速创建表格</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c `</kbd></td>
+                    <td>编辑当前单元格</td>
+                </tr>
+            </table>
+
+            <h2>小结</h2>
+
+            <p>Org 表格是一个轻量但功能完整的电子表格工具。它可以满足日常的数据整理、简单计算和报表需求，无需离开 Emacs 就能完成工作。配合公式系统，你可以构建复杂的计算表格。下一课我们将学习如何在文档中创建和使用超链接。</p>
+
+            <div class="page-nav">
+                <a href="09-dates-times.html">← 上一课：日期和时间</a>
+                <a href="11-hyperlinks.html">下一课：超链接 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

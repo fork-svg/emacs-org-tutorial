@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第 9 课：日期和时间 - Emacs Org Mode 教程</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="../index.html" class="logo">📝 Emacs Org Mode 教程</a>
+            <ul class="nav-links">
+                <li><a href="../index.html">首页</a></li>
+                <li><a href="https://fork-svg.github.io/org-mode-manual-zh/" target="_blank">完整手册</a></li>
+                <li><a href="https://github.com/fork-svg/emacs-org-tutorial" target="_blank">GitHub</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <h1>第 9 课：日期和时间</h1>
+
+            <p>日期和时间管理是 Org Mode 的另一项核心能力。通过时间戳（timestamp），你可以给任务设置截止日期、计划时间，记录工作时间，甚至创建重复任务。这些功能与议程视图（第 12 课）紧密结合，构成完整的日程管理系统。</p>
+
+            <h2>时间戳基础</h2>
+
+            <p>在 Org Mode 中，时间戳是尖括号包围的日期字符串：</p>
+
+            <pre><code>&lt;2026-11-22 Sun&gt;           日期
+&lt;2026-11-22 Sun 14:00&gt;      日期 + 时间
+&lt;2026-11-22 Sun 14:00-16:00&gt; 时间段</code></pre>
+
+            <h3>插入时间戳</h3>
+
+            <p>使用 <kbd>C-c .</kbd>（C-c 加句号）插入一个时间戳。Emacs 会弹出日期选择器：</p>
+
+            <ol class="steps">
+                <li>将光标放在想要插入时间戳的位置</li>
+                <li>按 <kbd>C-c .</kbd></li>
+                <li>在迷你缓冲区中编辑日期，或使用方向键导航日历</li>
+                <li>按 <kbd>RET</kbd> 确认</li>
+            </ol>
+
+            <p>日期输入的快捷方式：</p>
+
+            <pre><code>+3d       3 天后
++1w       1 周后
++2m       2 个月后
+fri       下一个周五
+tue       下一个周二</code></pre>
+
+            <div class="tip">
+                输入 <kbd>C-c .</kbd> 后，你可以直接输入相对日期表达式。例如输入 <code>+0d</code> 表示今天，<code>+1d</code> 表示明天，<code>thu</code> 表示下一个周四。
+            </div>
+
+            <h3>修改时间戳</h3>
+
+            <p>将光标放在时间戳上，使用以下快捷键修改：</p>
+
+            <ul>
+                <li><kbd>S-UP</kbd> / <kbd>S-DOWN</kbd> — 增加/减少一天</li>
+                <li><kbd>S-RIGHT</kbd> / <kbd>S-LEFT</kbd> — 增加/减少一天（替代方式）</li>
+                <li><kbd>C-c .</kbd> — 重新编辑时间戳</li>
+            </ul>
+
+            <h2>截止日期（DEADLINE）</h2>
+
+            <p>截止日期表示一个任务应该在此日期之前完成。使用 <kbd>C-c C-d</kbd> 设置：</p>
+
+            <pre><code>* TODO 提交项目报告
+  DEADLINE: &lt;2026-11-25 Wed&gt;
+  还需要完善数据分析部分</code></pre>
+
+            <p>截止日期会在议程视图中提前提醒你。默认提前 14 天开始提醒（可配置）。</p>
+
+            <div class="info">
+                截止日期的含义是"必须在此日期前完成"。适合有明确 deadline 的任务，如报告提交、会议准备等。
+            </div>
+
+            <h3>带时间的截止日期</h3>
+
+            <p>截止日期也可以包含具体时间：</p>
+
+            <pre><code>* TODO 参加线上会议
+  DEADLINE: &lt;2026-11-23 Mon 14:00&gt;</code></pre>
+
+            <h3>重复截止</h3>
+
+            <p>可以设置截止日期的重复间隔：</p>
+
+            <pre><code>* TODO 提交周报
+  DEADLINE: &lt;2026-11-27 Fri +1w&gt;</code></pre>
+
+            <p><code>+1w</code> 表示每周五重复一次。</p>
+
+            <h2>计划时间（SCHEDULED）</h2>
+
+            <p>计划时间表示你打算在什么时候开始处理这个任务。使用 <kbd>C-c C-s</kbd> 设置：</p>
+
+            <pre><code>* TODO 开始写技术博客
+  SCHEDULED: &lt;2026-11-23 Mon&gt;</code></pre>
+
+            <p>与截止日期不同，计划时间不会提前提醒。它只在指定日期出现在议程视图中，表示"今天开始做这件事"。</p>
+
+            <div class="warning">
+                注意区分 DEADLINE 和 SCHEDULED 的语义：<br>
+                • <strong>DEADLINE</strong>：必须在此日期前完成（有紧迫感）<br>
+                • <strong>SCHEDULED</strong>：计划在此日期开始处理（无紧迫感）<br>
+                如果一个任务既有截止日期又有计划时间，可以同时设置两者。
+            </div>
+
+            <h3>同时使用截止和计划</h3>
+
+            <pre><code>* TODO 完成客户演示
+  DEADLINE: &lt;2026-11-28 Sat&gt;
+  SCHEDULED: &lt;2026-11-24 Tue&gt;
+  需要提前准备幻灯片和演示数据</code></pre>
+
+            <p>这表示你计划在 11 月 24 日开始准备，截止日期是 11 月 28 日。</p>
+
+            <h2>重复任务</h2>
+
+            <p>Org Mode 支持创建重复任务，非常适合日常例行工作。</p>
+
+            <h3>基本重复任务</h3>
+
+            <p>在时间戳中添加 <code>+间隔</code> 来定义重复：</p>
+
+            <pre><code>* TODO 每日站会
+  SCHEDULED: &lt;2026-11-23 Mon 09:00 +1d&gt;
+
+* TODO 提交周报
+  DEADLINE: &lt;2026-11-27 Fri +1w&gt;
+
+* TODO 月度总结
+  DEADLINE: &lt;2026-11-30 Mon +1m&gt;</code></pre>
+
+            <h3>重复间隔语法</h3>
+
+            <table>
+                <tr>
+                    <th>表达式</th>
+                    <th>含义</th>
+                </tr>
+                <tr>
+                    <td><code>+1d</code></td>
+                    <td>每天重复</td>
+                </tr>
+                <tr>
+                    <td><code>+1w</code></td>
+                    <td>每周重复</td>
+                </tr>
+                <tr>
+                    <td><code>+2w</code></td>
+                    <td>每两周重复</td>
+                </tr>
+                <tr>
+                    <td><code>+1m</code></td>
+                    <td>每月重复</td>
+                </tr>
+                <tr>
+                    <td><code>+1y</code></td>
+                    <td>每年重复</td>
+                </tr>
+                <tr>
+                    <td><code>+2d</code></td>
+                    <td>每隔一天重复</td>
+                </tr>
+            </table>
+
+            <h3>重复类型</h3>
+
+            <p>Org 支持三种重复类型：</p>
+
+            <pre><code>* TODO 每天检查邮箱
+  DEADLINE: &lt;2026-11-23 Mon +1d&gt;
+  ;; 标准重复：标记完成后，日期直接加 1 天
+
+* TODO 检查服务器状态
+  DEADLINE: &lt;2026-11-23 Mon ++1d&gt;
+  ;; 累加重复：从上次日期加 1 天（跳过未完成的天）
+
+* TODO 整理工作区
+  DEADLINE: &lt;2026-11-23 Mon .+1d&gt;
+  ;; 重新启动：从完成当天开始加 1 天</code></pre>
+
+            <ul>
+                <li><strong>+1d</strong>（标准）：标记完成后，无论何时完成，新日期都是上次日期 + 1 天</li>
+                <li><strong>++1d</strong>（累加）：新日期是上次日期加上间隔的整数倍，保证不跳过</li>
+                <li><strong>.+1d</strong>（重启）：新日期是完成时刻 + 间隔，适合"上次完成后 N 天再做"的任务</li>
+            </ul>
+
+            <div class="tip">
+                最常用的重复类型是标准重复（<code>+1w</code>）。只有当你需要精确控制"跳过间隔"或"从完成时间重新计算"时，才需要用到其他两种。
+            </div>
+
+            <h2>日记时间戳（Inactive Timestamp）</h2>
+
+            <p>有时你只想记录一个事件发生的时间，而不需要它出现在议程中。使用方括号代替尖括号：</p>
+
+            <pre><code>* 会议纪要
+  创建于 [2026-11-20 Fri]
+  参会人员：张三、李四、王五
+
+* 代码审查
+  审查日期 [2026-11-21 Sat 14:00]
+  结论：需要重构数据库模块</code></pre>
+
+            <p>使用 <kbd>C-c !</kbd> 插入日记时间戳。它们不会出现在议程视图中。</p>
+
+            <h2>工作时间记录（CLOCK）</h2>
+
+            <p>Org 内置了工作时间记录功能，可以追踪你在每个任务上花费的时间。</p>
+
+            <h3>开始和停止计时</h3>
+
+            <p>将光标放在任务标题上，使用以下命令：</p>
+
+            <ul>
+                <li><kbd>C-c C-x C-i</kbd> — 开始计时（clock in）</li>
+                <li><kbd>C-c C-x C-o</kbd> — 停止计时（clock out）</li>
+                <li><kbd>C-c C-x C-e</kbd> — 手动编辑时间</li>
+            </ul>
+
+            <pre><code>* TODO 编写技术文档
+  :LOGBOOK:
+  CLOCK: [2026-11-22 Sun 09:00]--[2026-11-22 Sun 11:30] =&gt; 2:30
+  CLOCK: [2026-11-22 Sun 14:00]--[2026-11-22 Sun 15:45] =&gt; 1:45
+  :END:</code></pre>
+
+            <div class="info">
+                计时记录存储在标题下方的 LOGBOOK 抽屉（drawer）中。你可以随时查看总共花费的时间。使用 <kbd>C-c C-x C-d</kbd> 可以显示当前文件的时间报告。
+            </div>
+
+            <h3>时间报告</h3>
+
+            <p>使用 <kbd>C-c C-x C-d</kbd> 生成时间报告。Emacs 会在底部显示每个任务和总计的工作时间。</p>
+
+            <p>你也可以将时间报告插入文档：</p>
+
+            <pre><code>* 项目工作日志
+
+  #+BEGIN: clocktable :maxlevel 2 :scope file
+  #+CAPTION: 工作时间汇总
+  | Headline     | Time   |
+  |--------------+--------|
+  | *Total time* | *12:30*|
+  |--------------+--------|
+  | 编写文档     | 5:00   |
+  | 代码审查     | 3:30   |
+  | 会议         | 4:00   |
+  #+END:</code></pre>
+
+            <h2>实战练习</h2>
+
+            <p>创建一个包含各种日期时间的完整任务文件：</p>
+
+            <pre><code>* 本周工作计划
+
+** TODO 提交季度报告
+   DEADLINE: &lt;2026-11-27 Fri&gt;
+   SCHEDULED: &lt;2026-11-23 Mon&gt;
+   - [ ] 汇总各组数据
+   - [ ] 分析关键指标
+   - [ ] 撰写总结部分
+
+** TODO 参加项目评审会
+   SCHEDULED: &lt;2026-11-24 Tue 14:00&gt;
+   准备 15 分钟的 PPT
+
+** TODO 每日站会
+   SCHEDULED: &lt;2026-11-23 Mon 09:00 +1d&gt;
+
+** TODO 整理代码仓库
+   DEADLINE: &lt;2026-11-27 Fri +1w&gt;
+   每周五清理过期的分支
+
+* 会议记录
+
+** 2026-11-20 项目启动会
+   创建于 [2026-11-20 Fri]
+   确定了项目时间线和技术方案
+
+* 工作日志
+** TODO 编写 API 文档
+   :LOGBOOK:
+   CLOCK: [2026-11-22 Sun 09:00]--[2026-11-22 Sun 12:00] =&gt; 3:00
+   :END:</code></pre>
+
+            <h2>常用命令速查</h2>
+
+            <table>
+                <tr>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                </tr>
+                <tr>
+                    <td><kbd>C-c .</kbd></td>
+                    <td>插入时间戳</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-d</kbd></td>
+                    <td>设置截止日期</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-s</kbd></td>
+                    <td>设置计划时间</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c !</kbd></td>
+                    <td>插入日记时间戳</td>
+                </tr>
+                <tr>
+                    <td><kbd>S-UP / S-DOWN</kbd></td>
+                    <td>修改时间戳日期</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-x C-i</kbd></td>
+                    <td>开始计时（clock in）</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-x C-o</kbd></td>
+                    <td>停止计时（clock out）</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-x C-d</kbd></td>
+                    <td>显示时间报告</td>
+                </tr>
+                <tr>
+                    <td><kbd>C-c C-x C-r</kbd></td>
+                    <td>插入/刷新时间报告表格</td>
+                </tr>
+            </table>
+
+            <h2>小结</h2>
+
+            <p>本课我们学习了 Org Mode 的日期和时间管理功能，包括时间戳、截止日期、计划时间、重复任务和工作时间记录。这些功能为第 12 课的议程视图打下基础——所有带有 DEADLINE 和 SCHEDULED 的任务都会自动出现在议程中。</p>
+
+            <div class="page-nav">
+                <a href="08-tags.html">← 上一课：标签和分类</a>
+                <a href="10-tables.html">下一课：表格和电子表格 →</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

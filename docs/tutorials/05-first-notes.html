@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第 5 课：创建第一个笔记 - Emacs Org Mode 教程</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <nav class="breadcrumb">
+    <a href="../index.html">首页</a> &gt;
+    <span>第 5 课：创建第一个笔记</span>
+  </nav>
+
+  <header>
+    <h1>第 5 课：创建第一个笔记</h1>
+    <p class="subtitle">从零开始创建你的第一个 Org 笔记文件</p>
+  </header>
+
+  <main>
+    <section id="introduction">
+      <h2>课程简介</h2>
+      <p>现在你已经了解了 Org Mode 的基本概念，是时候动手创建你的第一个 Org 笔记了。本课将手把手教你创建一个完整的笔记文件，包括标题、内容、列表、链接等常用元素。</p>
+      <div class="info">
+        <strong>学习目标：</strong>完成本课后，你将能够独立创建和管理 Org 笔记文件，掌握常用的文本格式化方法。
+      </div>
+    </section>
+
+    <section id="create-file">
+      <h2>创建 Org 文件</h2>
+      <h3>步骤一：创建目录</h3>
+      <p>首先，建议创建一个专门的目录来存放 Org 文件：</p>
+      <pre><code># 在终端中创建目录
+mkdir -p ~/org
+
+# 或者在 Emacs 中按 M-! 执行命令
+M-! mkdir -p ~/org RET</code></pre>
+      <h3>步骤二：创建新文件</h3>
+      <ol>
+        <li>在 Emacs 中按 <kbd>C-x C-f</kbd>（find-file）</li>
+        <li>输入文件路径：<code>~/org/notes.org</code></li>
+        <li>按 <kbd>RET</kbd> 确认</li>
+        <li>Emacs 会自动创建文件并进入 Org Mode</li>
+      </ol>
+      <div class="tip">
+        <strong>文件命名建议：</strong>使用描述性的文件名，如 <code>work-notes.org</code>、<code>project-plan.org</code>、<code>reading-list.org</code> 等。避免使用过于笼统的名称。
+      </div>
+      <h3>步骤三：验证 Org Mode</h3>
+      <p>确认已进入 Org Mode：</p>
+      <ul>
+        <li>查看模式行（Emacs 底部），应显示 "Org" 字样</li>
+        <li>或按 <kbd>M-x describe-mode</kbd> 查看当前模式</li>
+        <li>如果未进入 Org Mode，按 <kbd>M-x org-mode</kbd> 手动切换</li>
+      </ul>
+    </section>
+
+    <section id="first-heading">
+      <h2>写第一个标题</h2>
+      <p>Org Mode 使用星号（<code>*</code>）来创建标题。一个星号表示一级标题，两个星号表示二级标题，以此类推。</p>
+      <h3>基本语法</h3>
+      <pre><code>* 一级标题
+** 二级标题
+*** 三级标题
+**** 四级标题（最多支持 8 级，但建议不超过 4 级）</code></pre>
+      <h3>实战练习</h3>
+      <p>在你的 <code>notes.org</code> 文件中输入以下内容：</p>
+      <pre><code>* 学习笔记
+** Emacs 基础
+** Org Mode
+** 快捷键总结</code></pre>
+      <p>输入完成后，按 <kbd>TAB</kbd> 键在标题上可以折叠/展开子标题。按 <kbd>S-TAB</kbd> 可以全局折叠/展开。</p>
+      <div class="info">
+        <strong>标题规则：</strong>
+        <ul style="margin-top: 0.5em;">
+          <li>星号必须在行首</li>
+          <li>星号后必须有一个空格</li>
+          <li>标题可以嵌套，但建议层级不要太深</li>
+          <li>Org Mode 会自动为标题添加视觉缩进</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="add-content">
+      <h2>添加内容</h2>
+      <h3>普通文本</h3>
+      <p>在标题下直接输入文本即可：</p>
+      <pre><code>* 学习笔记
+** Emacs 基础
+Emacs 是一个强大的文本编辑器，可以用来编写代码、
+记笔记、管理任务等。
+
+Org Mode 是 Emacs 的一个模式，用于组织信息和
+管理待办事项。</code></pre>
+      <h3>列表</h3>
+      <p>Org Mode 支持无序列表和有序列表：</p>
+      <pre><code>* 购物清单
+** 食物
+- 苹果
+- 牛奶
+- 面包
+- 鸡蛋
+
+** 学习用品
+1. 笔记本
+2. 钢笔
+3. 文件夹
+4. 计算器</code></pre>
+      <h3>复选框</h3>
+      <p>Org Mode 支持交互式复选框：</p>
+      <pre><code>* 今日任务
+- [X] 完成报告
+- [ ] 回复邮件
+- [ ] 整理文件
+- [X] 参加会议
+
+* 学习计划
+- [ ] 阅读第一章
+  - [X] 1.1 节
+  - [ ] 1.2 节
+  - [ ] 1.3 节
+- [ ] 完成练习</code></pre>
+      <p>按 <kbd>C-c C-c</kbd> 可以切换复选框状态。</p>
+      <div class="tip">
+        <strong>提示：</strong>复选框非常适合用于任务清单。使用嵌套的复选框可以追踪子任务的完成情况。
+      </div>
+    </section>
+
+    <section id="text-formatting">
+      <h2>文本格式化</h2>
+      <p>Org Mode 支持多种文本格式化方式：</p>
+      <h3>基本格式</h3>
+      <pre><code>*文字加粗*
+/斜体/
+_下划线_
++删除线+
+=等宽字体=
+~代码样式~</code></pre>
+      <h3>组合使用</h3>
+      <pre><code>*这是*加粗文字，/这是/斜体文字。
+可以*组合使用*：*/加粗斜体/*，*_加粗下划线_*。</code></pre>
+      <h3>实战示例</h3>
+      <pre><code>* 笔记格式示例
+** 重要概念
+*Org Mode* 是一个强大的 /组织工具/。
+
+** 代码示例
+使用 =M-x org-mode= 命令切换到 Org Mode。
+或者使用 ~org-mode~ 函数。
+
+** 注意事项
++删除线+ 表示已删除的内容。
+_下划线_ 用于强调。</code></pre>
+      <div class="warning">
+        <strong>注意：</strong>格式化标记两侧必须有非单词字符（如空格、标点符号），否则不会被识别。例如：<code>*文字*</code> 有效，但 <code>*文字*abc</code> 无效。
+      </div>
+    </section>
+
+    <section id="links">
+      <h2>添加链接</h2>
+      <p>Org Mode 支持多种类型的链接：</p>
+      <h3>基本链接语法</h3>
+      <pre><code>[[链接地址]]
+[[链接地址][显示文本]]</code></pre>
+      <h3>链接类型示例</h3>
+      <pre><code>* 链接示例
+** 网页链接
+访问 [[https://www.gnu.org/software/emacs/][Emacs 官网]]。
+或访问 [[https://orgmode.org]]。
+
+** 文件链接
+打开 [[file:~/documents/report.pdf][报告文件]]。
+查看 [[file:notes.org][笔记]]。
+
+** 邮件链接
+发送邮件给 [[mailto:test@example.com]]。
+
+** 内部链接
+参见 [[重要概念]] 部分。
+或跳转到 [[*文本格式化]]。</code></pre>
+      <h3>在链接上操作</h3>
+      <pre><code>C-c C-o    # 打开光标下的链接
+C-c l      # 存储链接（用于后续插入）
+C-c C-l    # 插入存储的链接</code></pre>
+      <div class="info">
+        <strong>提示：</strong>Org Mode 的链接功能非常强大。你可以链接到文件、网页、邮件、甚至其他 Org 文件中的特定位置。
+      </div>
+    </section>
+
+    <section id="tables">
+      <h2>创建表格</h2>
+      <p>Org Mode 的表格功能是其亮点之一。表格使用 <code>|</code> 作为分隔符。</p>
+      <h3>基本表格</h3>
+      <pre><code>* 数据表格
+| 姓名 | 年龄 | 城市 |
+|------+-------|------|
+| 张三 | 25   | 北京 |
+| 李四 | 30   | 上海 |
+| 王五 | 28   | 广州 |</code></pre>
+      <h3>表格操作</h3>
+      <p>Org Mode 会自动对齐表格列。输入时：</p>
+      <ul>
+        <li>按 <kbd>TAB</kbd> 会自动对齐并移动到下一个单元格</li>
+        <li>按 <kbd>S-TAB</kbd> 移动到上一个单元格</li>
+        <li>按 <kbd>RET</kbd> 会创建新行</li>
+        <li>输入 <code>|---</code> 后按 <kbd>TAB</kbd> 会插入水平分隔线</li>
+      </ul>
+      <h3>表格计算</h3>
+      <pre><code>* 成绩表
+| 学生 | 数学 | 英语 | 总分 |
+|------+------+-------+------|
+| 张三 | 90  | 85   | 175 |
+| 李四 | 88  | 92   | 180 |
+| 王五 | 95  | 89   | 184 |
+| 平均 | 91  | 88.7 | 179.7 |
+#+TBLFM: @2$4=$2+$3::@3$4=$2+$3::@4$4=$2+$3
+#+TBLFM: @5$2=vmean(@2..@4)::@5$3=vmean(@2..@4)::@5$4=vmean(@2..@4)</code></pre>
+      <div class="tip">
+        <strong>表格公式：</strong>按 <kbd>C-c C-c</kbd> 在 <code>#+TBLFM</code> 行上可以重新计算表格。Org Mode 支持丰富的公式语法。
+      </div>
+    </section>
+
+    <section id="tags">
+      <h2>添加标签</h2>
+      <p>标签是组织信息的重要方式。Org Mode 支持在标题中添加标签。</p>
+      <h3>基本标签语法</h3>
+      <pre><code>* 标题 :标签1:标签2:
+** 工作计划 :work:
+** 个人生活 :personal:
+** 重要任务 :important:urgent:</code></pre>
+      <h3>添加标签的方法</h3>
+      <ol>
+        <li>手动在标题后输入 <code>:标签:</code></li>
+        <li>使用快捷键 <kbd>C-c C-q</kbd> 交互式添加标签</li>
+      </ol>
+      <h3>预定义标签</h3>
+      <p>在文件头定义可用标签：</p>
+      <pre><code>#+TAGS: work(w) personal(p) important(i) urgent(u)
+
+* 工作任务 :work:</code></pre>
+      <div class="info">
+        <strong>标签搜索：</strong>使用 <kbd>M-x org-tags-view</kbd> 或 <kbd>C-c a m</kbd> 可以搜索带有特定标签的标题。
+      </div>
+    </section>
+
+    <section id="properties">
+      <h2>添加属性</h2>
+      <p>属性是附加在标题上的键值对，用于存储结构化信息。</p>
+      <h3>基本属性语法</h3>
+      <pre><code>* 项目任务
+  :PROPERTIES:
+  :ID: task-001
+  :CATEGORY: work
+  :EFFORT: 2:00
+  :END:
+
+  这是任务描述。</code></pre>
+      <h3>常用属性</h3>
+      <pre><code>* 任务示例
+  :PROPERTIES:
+  :CREATED: [2024-03-10 周日]
+  :PRIORITY: high
+  :STATUS: in-progress
+  :END:</code></pre>
+      <h3>属性操作</h3>
+      <pre><code>C-c C-p    # 设置属性
+C-c C-w    # 剪切标题（包括属性）
+C-c M-w    # 复制标题（包括属性）</code></pre>
+    </section>
+
+    <section id="save-manage">
+      <h2>保存和管理</h2>
+      <h3>保存文件</h3>
+      <pre><code>C-x C-s    # 保存当前文件
+C-x C-w    # 另存为
+C-x s      # 保存所有修改的文件</code></pre>
+      <h3>文件管理建议</h3>
+      <p>建议按用途组织 Org 文件：</p>
+      <pre><code>~/org/
+├── inbox.org        # 收件箱，快速记录
+├── work.org         # 工作相关
+├── personal.org     # 个人生活
+├── projects.org     # 项目计划
+├── notes.org        # 学习笔记
+├── diary.org        # 日记
+└── archive/         # 归档
+    ├── 2023.org
+    └── 2024.org</code></pre>
+      <h3>归档旧任务</h3>
+      <pre><code>C-c C-x C-a    # 归档当前标题
+C-c C-x C-s    # 将当前标题移到归档文件</code></pre>
+      <div class="tip">
+        <strong>最佳实践：</strong>定期整理和归档完成的或不再相关的任务。保持主文件的简洁，有助于提高效率。
+      </div>
+    </section>
+
+    <section id="practice">
+      <h2>实战练习</h2>
+      <p>创建一个完整的笔记文件，包含以下元素：</p>
+      <pre><code>#+TITLE: 我的第一个 Org 笔记
+#+AUTHOR: [你的名字]
+#+DATE: 2024-03-10
+
+* 学习目标
+** Emacs 基础操作
+- [ ] 掌握文件操作
+- [X] 学会基本移动
+- [ ] 熟练使用帮助系统
+
+** Org Mode 入门
+- [X] 创建第一个笔记
+- [ ] 学习标题和层级
+- [ ] 掌握任务管理
+
+* 学习笔记
+** 2024-03-10
+今天开始学习 Org Mode。Org Mode 是一个强大的组织工具，
+可以用于：
+- 记笔记
+- 管理任务
+- 安排日程
+- 编写文档
+
+** 有用的链接
+- [[https://orgmode.org][Org Mode 官网]]
+- [[https://www.gnu.org/software/emacs/][Emacs 官网]]
+- [[file:~/org/work.org][工作笔记]]
+
+* 待办事项
+** TODO 完成 Emacs 教程
+   DEADLINE: &lt;2024-03-20 周三&gt;
+** TODO 阅读 Org Mode 手册
+** DONE 创建笔记目录
+
+* 参考资料
+| 资源 | 类型 | 状态 |
+|---------+---------+---------|
+| 官方手册 | 文档 | 进行中 |
+| 视频教程 | 视频 | 未开始 |
+| 社区论坛 | 在线 | 已收藏 |</code></pre>
+    </section>
+
+    <section id="summary">
+      <h2>课程小结</h2>
+      <p>恭喜！你已经创建了第一个完整的 Org 笔记。本课涵盖了：</p>
+      <ul>
+        <li>创建 Org 文件</li>
+        <li>编写标题和内容</li>
+        <li>使用列表和复选框</li>
+        <li>文本格式化</li>
+        <li>添加链接</li>
+        <li>创建表格</li>
+        <li>使用标签和属性</li>
+        <li>保存和管理文件</li>
+      </ul>
+      <div class="tip">
+        <strong>下一步：</strong>在下一课中，你将深入学习标题和层级结构，掌握 Org Mode 大纲的核心功能。
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <nav class="page-nav">
+      <a href="04-quick-start.html" class="prev-page">← 上一课：Org Mode 快速开始</a>
+      <a href="06-headings.html" class="next-page">下一课：标题和层级结构 →</a>
+    </nav>
+  </footer>
+</body>
+</html>
